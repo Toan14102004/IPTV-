@@ -1,0 +1,23 @@
+## Run `swiftgen` from this directory (I340-IPTV/) to regenerate Sources/Generated.
+
+input_dir: ./
+output_dir: I340-IPTV/Sources/Generated/
+
+xcassets:
+  inputs:
+    - I340-IPTV/Resources/Assets/Assets.xcassets
+    - I340-IPTV/Resources/Assets/Color.xcassets
+    - I340-IPTV/Resources/Assets/Icon.xcassets
+    - I340-IPTV/Resources/Assets/Image.xcassets
+  outputs:
+    templatePath: Templates/xcassets/assets_swift5_swiftui.stencil
+    params:
+      forceProvidesNamespaces: true
+    output: XCAssets+Generated.swift
+
+fonts:
+  inputs:
+    - I340-IPTV/Resources/Fonts
+  outputs:
+    templatePath: Templates/fonts/fonts_swift5_swiftui.stencil
+    output: Fonts+Generated.swift

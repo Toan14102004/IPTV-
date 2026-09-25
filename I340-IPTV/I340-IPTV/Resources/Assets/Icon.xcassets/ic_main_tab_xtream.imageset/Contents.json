@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_main_tab_xtream.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

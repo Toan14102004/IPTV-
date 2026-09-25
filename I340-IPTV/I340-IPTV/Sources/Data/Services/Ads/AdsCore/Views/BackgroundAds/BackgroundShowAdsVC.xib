@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="dark"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSans-Medium.ttf">
+            <string>OpenSans-Medium</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BackgroundShowAdsVC" customModule="Streamo_IPTV__M3U_Xtream" customModuleProvider="target">
+            <connections>
+                <outlet property="appIconImage" destination="gEP-f4-9Ke" id="YyX-bV-oQs"/>
+                <outlet property="dismissButton" destination="4Wx-2J-o1T" id="Zc5-pf-csm"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="welcomeTextLabel" destination="dJ2-HP-tvQ" id="v6W-iP-oBz"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OH3-yR-Uxs">
+                    <rect key="frame" x="0.0" y="118" width="393" height="666"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="welcome_back" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJ2-HP-tvQ">
+                            <rect key="frame" x="116" y="224" width="161" height="28"/>
+                            <fontDescription key="fontDescription" name="OpenSans-Medium" family="Open Sans" pointSize="24"/>
+                            <color key="textColor" name="DarkGray"/>
+                            <nil key="highlightedColor"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="localizeKey" value="welcome_back"/>
+                            </userDefinedRuntimeAttributes>
+                        </label>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_app_icon" translatesAutoresizingMaskIntoConstraints="NO" id="gEP-f4-9Ke">
+                            <rect key="frame" x="136.66666666666666" y="80" width="119.99999999999997" height="120"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="120" id="29D-0j-224"/>
+                                <constraint firstAttribute="width" constant="120" id="70J-Z5-HgV"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="16"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </imageView>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="OQj-6X-fRc">
+                            <rect key="frame" x="178" y="314.66666666666669" width="37" height="37"/>
+                            <color key="color" name="DarkGray"/>
+                        </activityIndicatorView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Wx-2J-o1T">
+                            <rect key="frame" x="32" y="32" width="21" height="22"/>
+                            <color key="tintColor" name="color_text_secondary"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" image="ic_close"/>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="gEP-f4-9Ke" firstAttribute="top" secondItem="OH3-yR-Uxs" secondAttribute="top" constant="80" id="5gc-GG-pRJ"/>
+                        <constraint firstItem="4Wx-2J-o1T" firstAttribute="top" secondItem="OH3-yR-Uxs" secondAttribute="top" constant="32" id="Q3p-3R-mfb"/>
+                        <constraint firstItem="4Wx-2J-o1T" firstAttribute="leading" secondItem="OH3-yR-Uxs" secondAttribute="leading" constant="32" id="RQq-fO-hyq"/>
+                        <constraint firstItem="OQj-6X-fRc" firstAttribute="centerY" secondItem="OH3-yR-Uxs" secondAttribute="centerY" id="Ttn-tg-fWg"/>
+                        <constraint firstItem="OQj-6X-fRc" firstAttribute="centerX" secondItem="OH3-yR-Uxs" secondAttribute="centerX" id="WKw-DR-B2U"/>
+                        <constraint firstItem="dJ2-HP-tvQ" firstAttribute="centerX" secondItem="OH3-yR-Uxs" secondAttribute="centerX" id="bCz-Mg-IRG"/>
+                        <constraint firstItem="gEP-f4-9Ke" firstAttribute="centerX" secondItem="OH3-yR-Uxs" secondAttribute="centerX" id="hc5-f0-zxE"/>
+                        <constraint firstItem="dJ2-HP-tvQ" firstAttribute="top" secondItem="gEP-f4-9Ke" secondAttribute="bottom" constant="24" id="p5o-NG-0Jf"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="OH3-yR-Uxs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="PuE-5t-XyM"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="OH3-yR-Uxs" secondAttribute="bottom" id="lJi-Tx-2h6"/>
+                <constraint firstItem="OH3-yR-Uxs" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="tP2-Sy-qbn"/>
+                <constraint firstItem="OH3-yR-Uxs" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="yqI-GS-fDD"/>
+            </constraints>
+            <point key="canvasLocation" x="61.832061068702288" y="19.718309859154932"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="ic_app_icon" width="1024" height="1024"/>
+        <image name="ic_close" width="21" height="21"/>
+        <namedColor name="DarkGray">
+            <color red="0.15000000596046448" green="0.15000000596046448" blue="0.15000000596046448" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="color_text_secondary">
+            <color red="0.59999999999999998" green="0.58823529411764708" blue="0.56862745098039214" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

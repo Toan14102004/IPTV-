@@ -1,0 +1,15 @@
+{
+  "originHash" : "7222a6d22b6a23ceed5ca9c2d2be044035a04e1094a7c6722837f3f80a11880c",
+  "pins" : [
+    {
+      "identity" : "adsdebugkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kiluss2/AdsDebugKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "107ffa1add80d0761de9bae64eca675e170e6d68"
+      }
+    }
+  ],
+  "version" : 3
+}

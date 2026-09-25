@@ -1,0 +1,8 @@
+interface:
+  display_name: "I340 UI Generator"
+  short_description: "Generate UIKit/XIB UI for I340 IPTV"
+  brand_color: "#C7002A"
+  default_prompt: "Use $i340-ui-generator to implement this Figma or screenshot UI in the I340-IPTV UIKit/XIB app."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,395 @@
+// swiftlint:disable all
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
+
+#if os(macOS)
+  import AppKit
+#elseif os(iOS)
+  import UIKit
+#elseif os(tvOS) || os(watchOS)
+  import UIKit
+#endif
+#if canImport(SwiftUI)
+  import SwiftUI
+#endif
+
+// Deprecated typealiases
+@available(*, deprecated, renamed: "ColorAsset.Color", message: "This typealias will be removed in SwiftGen 7.0")
+internal typealias AssetColorTypeAlias = ColorAsset.Color
+@available(*, deprecated, renamed: "ImageAsset.Image", message: "This typealias will be removed in SwiftGen 7.0")
+internal typealias AssetImageTypeAlias = ImageAsset.Image
+
+// swiftlint:disable superfluous_disable_command file_length implicit_return
+
+// MARK: - Asset Catalogs
+
+// swiftlint:disable identifier_name line_length nesting type_body_length type_name
+internal enum Asset {
+  internal enum Assets {
+    internal static let accentColor = ColorAsset(name: "AccentColor")
+  }
+  internal enum Color {
+    internal static let _03Fdcc = ColorAsset(name: "03FDCC")
+    internal static let _05Defb = ColorAsset(name: "05DEFB")
+    internal static let _07E5Dc = ColorAsset(name: "07E5DC")
+    internal static let _121517 = ColorAsset(name: "121517")
+    internal static let _242E33 = ColorAsset(name: "242E33")
+    internal static let _333741 = ColorAsset(name: "333741")
+    internal static let c2F2Da = ColorAsset(name: "C2F2DA")
+    internal static let e6F2Ec = ColorAsset(name: "E6F2EC")
+    internal static let accentBlue = ColorAsset(name: "accentBlue")
+    internal static let avatarBorder = ColorAsset(name: "avatarBorder")
+    internal static let blackSoft = ColorAsset(name: "blackSoft")
+    internal static let borderMuted = ColorAsset(name: "borderMuted")
+    internal static let brandMaroon = ColorAsset(name: "brandMaroon")
+    internal static let brandMaroonDark = ColorAsset(name: "brandMaroonDark")
+    internal static let brandRed = ColorAsset(name: "brandRed")
+    internal static let brandRedBadge = ColorAsset(name: "brandRedBadge")
+    internal static let brandRedButton = ColorAsset(name: "brandRedButton")
+    internal static let brandRedDark = ColorAsset(name: "brandRedDark")
+    internal static let brandRedDeep = ColorAsset(name: "brandRedDeep")
+    internal static let brandRedGlow = ColorAsset(name: "brandRedGlow")
+    internal static let buttonNeutral = ColorAsset(name: "buttonNeutral")
+    internal static let cardBackground = ColorAsset(name: "cardBackground")
+    internal static let cardBorder = ColorAsset(name: "cardBorder")
+    internal static let colorBgPrimary = ColorAsset(name: "colorBgPrimary")
+    internal static let colorBgSecondary = ColorAsset(name: "colorBgSecondary")
+    internal static let colorPrimaryDark = ColorAsset(name: "colorPrimaryDark")
+    internal static let colorPrimaryLegacy = ColorAsset(name: "colorPrimaryLegacy")
+    internal static let colorSecondaryLegacy = ColorAsset(name: "colorSecondaryLegacy")
+    internal static let colorSemanticPrimary = ColorAsset(name: "colorSemanticPrimary")
+    internal static let colorSemanticSecondary = ColorAsset(name: "colorSemanticSecondary")
+    internal static let colorWhiteOnBG = ColorAsset(name: "colorWhiteOnBG")
+    internal static let colorAccent = ColorAsset(name: "color_accent")
+    internal static let colorBg = ColorAsset(name: "color_bg")
+    internal static let colorBgNative = ColorAsset(name: "color_bg_native")
+    internal static let colorBgNativeAds = ColorAsset(name: "color_bg_native_ads")
+    internal static let colorBgNativeItem = ColorAsset(name: "color_bg_native_item")
+    internal static let colorBgPremium = ColorAsset(name: "color_bg_premium")
+    internal static let colorBodyNativeAds = ColorAsset(name: "color_body_native_ads")
+    internal static let colorBorder = ColorAsset(name: "color_border")
+    internal static let colorChat = ColorAsset(name: "color_chat")
+    internal static let colorDawnText = ColorAsset(name: "color_dawn_text")
+    internal static let colorGenderDog = ColorAsset(name: "color_gender_dog")
+    internal static let colorNeutral = ColorAsset(name: "color_neutral")
+    internal static let colorPrimary = ColorAsset(name: "color_primary")
+    internal static let colorSecondary = ColorAsset(name: "color_secondary")
+    internal static let colorShadow = ColorAsset(name: "color_shadow")
+    internal static let colorShadowContinue = ColorAsset(name: "color_shadow_continue")
+    internal static let colorShadowGreen = ColorAsset(name: "color_shadow_green")
+    internal static let colorShadowInapp = ColorAsset(name: "color_shadow_inapp")
+    internal static let colorShadowPrimary = ColorAsset(name: "color_shadow_primary")
+    internal static let colorTextAd = ColorAsset(name: "color_text_ad")
+    internal static let colorTextInapp = ColorAsset(name: "color_text_inapp")
+    internal static let colorTextOnboard = ColorAsset(name: "color_text_onboard")
+    internal static let colorTextPrimary = ColorAsset(name: "color_text_primary")
+    internal static let colorTextSecondary = ColorAsset(name: "color_text_secondary")
+    internal static let colorWhite = ColorAsset(name: "color_white")
+    internal static let colorWhite20 = ColorAsset(name: "color_white_20")
+    internal static let coral = ColorAsset(name: "coral")
+    internal static let dialogBackground = ColorAsset(name: "dialogBackground")
+    internal static let dividerBlue = ColorAsset(name: "dividerBlue")
+    internal static let dividerGray = ColorAsset(name: "dividerGray")
+    internal static let fieldBackground = ColorAsset(name: "fieldBackground")
+    internal static let fieldBackgroundDark = ColorAsset(name: "fieldBackgroundDark")
+    internal static let handleGray = ColorAsset(name: "handleGray")
+    internal static let iconBackground = ColorAsset(name: "iconBackground")
+    internal static let lavender = ColorAsset(name: "lavender")
+    internal static let loadingDialogBackground = ColorAsset(name: "loadingDialogBackground")
+    internal static let pinkAccent = ColorAsset(name: "pinkAccent")
+    internal static let pinkBorder = ColorAsset(name: "pinkBorder")
+    internal static let radioBorder = ColorAsset(name: "radioBorder")
+    internal static let screenBackground = ColorAsset(name: "screenBackground")
+    internal static let screenBackgroundDark = ColorAsset(name: "screenBackgroundDark")
+    internal static let separator = ColorAsset(name: "separator")
+    internal static let sheetBackground = ColorAsset(name: "sheetBackground")
+    internal static let sheetSurface = ColorAsset(name: "sheetSurface")
+    internal static let softRed = ColorAsset(name: "softRed")
+    internal static let surfaceDark = ColorAsset(name: "surfaceDark")
+    internal static let surfaceDarkest = ColorAsset(name: "surfaceDarkest")
+    internal static let tabBarBorder = ColorAsset(name: "tabBarBorder")
+    internal static let textCaption = ColorAsset(name: "textCaption")
+    internal static let textDisabled = ColorAsset(name: "textDisabled")
+    internal static let textGray = ColorAsset(name: "textGray")
+    internal static let textLight = ColorAsset(name: "textLight")
+    internal static let textMuted = ColorAsset(name: "textMuted")
+    internal static let textOnSurface = ColorAsset(name: "textOnSurface")
+    internal static let textPrimary = ColorAsset(name: "textPrimary")
+    internal static let textSoft = ColorAsset(name: "textSoft")
+    internal static let textSubtitle = ColorAsset(name: "textSubtitle")
+    internal static let textTertiary = ColorAsset(name: "textTertiary")
+  }
+  internal enum Icon {
+    internal static let icAppIcon = ImageAsset(name: "ic_app_icon")
+    internal static let icArrowLeft = ImageAsset(name: "ic_arrow_left")
+    internal static let icChannelDefault = ImageAsset(name: "ic_channel_default")
+    internal static let icChannelPlayerDefault = ImageAsset(name: "ic_channel_player_default")
+    internal static let icChannelPlayerHeartFilled = ImageAsset(name: "ic_channel_player_heart_filled")
+    internal static let icChannelPlayerHeartOutline = ImageAsset(name: "ic_channel_player_heart_outline")
+    internal static let icChannelPlayerVoice = ImageAsset(name: "ic_channel_player_voice")
+    internal static let icChecked = ImageAsset(name: "ic_checked")
+    internal static let icCheckedLg = ImageAsset(name: "ic_checked_lg")
+    internal static let icClose = ImageAsset(name: "ic_close")
+    internal static let icGuide = ImageAsset(name: "ic_guide")
+    internal static let icHelpMain = ImageAsset(name: "ic_help_main")
+    internal static let icLanguage = ImageAsset(name: "ic_language")
+    internal static let icMainChipFavorite = ImageAsset(name: "ic_main_chip_favorite")
+    internal static let icMainChipFile = ImageAsset(name: "ic_main_chip_file")
+    internal static let icMainChipLink = ImageAsset(name: "ic_main_chip_link")
+    internal static let icMainChipStream = ImageAsset(name: "ic_main_chip_stream")
+    internal static let icMainTabAdd = ImageAsset(name: "ic_main_tab_add")
+    internal static let icMainTabPlaylist = ImageAsset(name: "ic_main_tab_playlist")
+    internal static let icMainTabXtream = ImageAsset(name: "ic_main_tab_xtream")
+    internal static let icMenu = ImageAsset(name: "ic_menu")
+    internal static let icPlaylistItemDefault = ImageAsset(name: "ic_playlist_item_default")
+    internal static let icPlaylistMenuImportDevice = ImageAsset(name: "ic_playlist_menu_import_device")
+    internal static let icPlaylistMenuImportUrl = ImageAsset(name: "ic_playlist_menu_import_url")
+    internal static let icPlaylistMenuSingleStream = ImageAsset(name: "ic_playlist_menu_single_stream")
+    internal static let icPlaylistMenuXtreamApi = ImageAsset(name: "ic_playlist_menu_xtream_api")
+    internal static let icPremiumMain = ImageAsset(name: "ic_premium_main")
+    internal static let icReload = ImageAsset(name: "ic_reload")
+    internal static let icRightNew = ImageAsset(name: "ic_right_new")
+    internal static let icRightShort = ImageAsset(name: "ic_right_short")
+    internal static let icSetting = ImageAsset(name: "ic_setting")
+    internal static let icSettingsChevron = ImageAsset(name: "ic_settings_chevron")
+    internal static let icSettingsContact = ImageAsset(name: "ic_settings_contact")
+    internal static let icSettingsLanguage = ImageAsset(name: "ic_settings_language")
+    internal static let icSettingsPremiumArrow = ImageAsset(name: "ic_settings_premium_arrow")
+    internal static let icSettingsPrivacy = ImageAsset(name: "ic_settings_privacy")
+    internal static let icSettingsRate = ImageAsset(name: "ic_settings_rate")
+    internal static let icSettingsShare = ImageAsset(name: "ic_settings_share")
+    internal static let icSettingsTerms = ImageAsset(name: "ic_settings_terms")
+    internal static let icShare = ImageAsset(name: "ic_share")
+    internal static let icUncheck = ImageAsset(name: "ic_uncheck")
+    internal static let icXtreamLiveTv = ImageAsset(name: "ic_xtream_live_tv")
+    internal static let icXtreamMovies = ImageAsset(name: "ic_xtream_movies")
+    internal static let icXtreamSeries = ImageAsset(name: "ic_xtream_series")
+    internal static let iconNoConnection = ImageAsset(name: "icon_no_connection")
+    internal static let imgPlaylistArrow = ImageAsset(name: "img_playlist_arrow")
+    internal static let imgPlaylistEmpty = ImageAsset(name: "img_playlist_empty")
+    internal static let imgXtreamHero = ImageAsset(name: "img_xtream_hero")
+    internal enum Language {
+      internal static let flagArabic = ImageAsset(name: "flag_arabic")
+      internal static let flagBangla = ImageAsset(name: "flag_bangla")
+      internal static let flagChinese = ImageAsset(name: "flag_chinese")
+      internal static let flagEnglish = ImageAsset(name: "flag_english")
+      internal static let flagFrench = ImageAsset(name: "flag_french")
+      internal static let flagGerman = ImageAsset(name: "flag_german")
+      internal static let flagHindi = ImageAsset(name: "flag_hindi")
+      internal static let flagJapanese = ImageAsset(name: "flag_japanese")
+      internal static let flagPortuguese = ImageAsset(name: "flag_portuguese")
+      internal static let flagPunjabi = ImageAsset(name: "flag_punjabi")
+      internal static let flagSpanish = ImageAsset(name: "flag_spanish")
+      internal static let flagSwahili = ImageAsset(name: "flag_swahili")
+    }
+    internal enum Onboard {
+      internal static let icPagecontrolFirst = ImageAsset(name: "ic_pagecontrol_first")
+      internal static let icPagecontrolSecond = ImageAsset(name: "ic_pagecontrol_second")
+      internal static let icPagecontrolThird = ImageAsset(name: "ic_pagecontrol_third")
+      internal static let imgOnboardFirst = ImageAsset(name: "img_onboard_first")
+      internal static let imgOnboardSecond = ImageAsset(name: "img_onboard_second")
+      internal static let imgOnboardThird = ImageAsset(name: "img_onboard_third")
+    }
+  }
+  internal enum Image {
+    internal static let avatarXtream1 = ImageAsset(name: "avatar_xtream_1")
+    internal static let avatarXtream2 = ImageAsset(name: "avatar_xtream_2")
+    internal static let avatarXtream3 = ImageAsset(name: "avatar_xtream_3")
+    internal static let avatarXtream4 = ImageAsset(name: "avatar_xtream_4")
+    internal static let bgCardPre = ImageAsset(name: "bg_card_pre")
+    internal static let bgInapp = ImageAsset(name: "bg_inapp")
+    internal static let bgInappNew = ImageAsset(name: "bg_inapp_new")
+    internal static let bgSplash = ImageAsset(name: "bg_splash")
+    internal static let bgStart = ImageAsset(name: "bg_start")
+    internal enum Guide {
+      internal static let icBackGuide = ImageAsset(name: "ic_back_guide")
+      internal static let icGuideStep11 = ImageAsset(name: "ic_guide_step_1_1")
+      internal static let icGuideStep12 = ImageAsset(name: "ic_guide_step_1_2")
+      internal static let icGuideStep31 = ImageAsset(name: "ic_guide_step_3_1")
+      internal static let icGuideStep32 = ImageAsset(name: "ic_guide_step_3_2")
+      internal static let icGuideStep33 = ImageAsset(name: "ic_guide_step_3_3")
+      internal static let icGuideStep34 = ImageAsset(name: "ic_guide_step_3_4")
+    }
+    internal static let imgInappHero = ImageAsset(name: "img_inapp_hero")
+    internal static let imgSettingsPremiumBanner = ImageAsset(name: "img_settings_premium_banner")
+    internal enum Movies {
+      internal static let ic15Xtream = ImageAsset(name: "ic_15_xtream")
+      internal static let icAgreementSelect = ImageAsset(name: "ic_agreement_select")
+      internal static let icAgreementUnselect = ImageAsset(name: "ic_agreement_unselect")
+      internal static let icBackXtream = ImageAsset(name: "ic_back_xtream")
+      internal static let icCaseXtream = ImageAsset(name: "ic_case_xtream")
+      internal static let icErrorXtream = ImageAsset(name: "ic_error_xtream")
+      internal static let icFailedAddXtream = ImageAsset(name: "ic_failed_add_xtream")
+      internal static let icFavorite = ImageAsset(name: "ic_favorite")
+      internal static let icFavorite1 = ImageAsset(name: "ic_favorite_1")
+      internal static let icFullScreenXtream = ImageAsset(name: "ic_full_screen_xtream")
+      internal static let icLeftXtream = ImageAsset(name: "ic_left_xtream")
+      internal static let icLiveTv = ImageAsset(name: "ic_live_tv")
+      internal static let icLockXtream = ImageAsset(name: "ic_lock_xtream")
+      internal static let icMoreXtream = ImageAsset(name: "ic_more_xtream")
+      internal static let icMovies = ImageAsset(name: "ic_movies")
+      internal static let icPasswordXtream = ImageAsset(name: "ic_password_xtream")
+      internal static let icPasswordXtreamOpen = ImageAsset(name: "ic_password_xtream_open")
+      internal static let icSeries = ImageAsset(name: "ic_series")
+    }
+  }
+}
+// swiftlint:enable identifier_name line_length nesting type_body_length type_name
+
+// MARK: - Implementation Details
+
+internal final class ColorAsset {
+  internal fileprivate(set) var name: String
+
+  #if os(macOS)
+  internal typealias Color = NSColor
+  #elseif os(iOS) || os(tvOS) || os(watchOS)
+  internal typealias Color = UIColor
+  #endif
+
+  @available(iOS 11.0, tvOS 11.0, watchOS 4.0, macOS 10.13, *)
+  internal private(set) lazy var uiColor: Color = {
+    guard let color = Color(asset: self) else {
+      fatalError("Unable to load color asset named \(name).")
+    }
+    return color
+  }()
+
+  #if os(iOS) || os(tvOS)
+  @available(iOS 11.0, tvOS 11.0, *)
+  internal func color(compatibleWith traitCollection: UITraitCollection) -> Color {
+    let bundle = BundleToken.bundle
+    guard let color = Color(named: name, in: bundle, compatibleWith: traitCollection) else {
+      fatalError("Unable to load color asset named \(name).")
+    }
+    return color
+  }
+  #endif
+
+  #if canImport(SwiftUI)
+  @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+  internal private(set) lazy var color: SwiftUI.Color = {
+    SwiftUI.Color(asset: self)
+  }()
+  #endif
+
+  fileprivate init(name: String) {
+    self.name = name
+  }
+}
+
+internal extension ColorAsset.Color {
+  @available(iOS 11.0, tvOS 11.0, watchOS 4.0, macOS 10.13, *)
+  convenience init?(asset: ColorAsset) {
+    let bundle = BundleToken.bundle
+    #if os(iOS) || os(tvOS)
+    self.init(named: asset.name, in: bundle, compatibleWith: nil)
+    #elseif os(macOS)
+    self.init(named: NSColor.Name(asset.name), bundle: bundle)
+    #elseif os(watchOS)
+    self.init(named: asset.name)
+    #endif
+  }
+}
+
+#if canImport(SwiftUI)
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+internal extension SwiftUI.Color {
+  init(asset: ColorAsset) {
+    let bundle = BundleToken.bundle
+    self.init(asset.name, bundle: bundle)
+  }
+}
+#endif
+
+internal struct ImageAsset {
+  internal fileprivate(set) var name: String
+
+  #if os(macOS)
+  internal typealias Image = NSImage
+  #elseif os(iOS) || os(tvOS) || os(watchOS)
+  internal typealias Image = UIImage
+  #endif
+
+  @available(iOS 8.0, tvOS 9.0, watchOS 2.0, macOS 10.7, *)
+  internal var uiImage: Image {
+    let bundle = BundleToken.bundle
+    #if os(iOS) || os(tvOS)
+    let image = Image(named: name, in: bundle, compatibleWith: nil)
+    #elseif os(macOS)
+    let name = NSImage.Name(self.name)
+    let image = (bundle == .main) ? NSImage(named: name) : bundle.image(forResource: name)
+    #elseif os(watchOS)
+    let image = Image(named: name)
+    #endif
+    guard let result = image else {
+      fatalError("Unable to load image asset named \(name).")
+    }
+    return result
+  }
+
+  #if os(iOS) || os(tvOS)
+  @available(iOS 8.0, tvOS 9.0, *)
+  internal func image(compatibleWith traitCollection: UITraitCollection) -> Image {
+    let bundle = BundleToken.bundle
+    guard let result = Image(named: name, in: bundle, compatibleWith: traitCollection) else {
+      fatalError("Unable to load image asset named \(name).")
+    }
+    return result
+  }
+  #endif
+
+  #if canImport(SwiftUI)
+  @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+  internal var image: SwiftUI.Image {
+    SwiftUI.Image(asset: self)
+  }
+  #endif
+}
+
+internal extension ImageAsset.Image {
+  @available(iOS 8.0, tvOS 9.0, watchOS 2.0, *)
+  @available(macOS, deprecated,
+    message: "This initializer is unsafe on macOS, please use the ImageAsset.image property")
+  convenience init?(asset: ImageAsset) {
+    #if os(iOS) || os(tvOS)
+    let bundle = BundleToken.bundle
+    self.init(named: asset.name, in: bundle, compatibleWith: nil)
+    #elseif os(macOS)
+    self.init(named: NSImage.Name(asset.name))
+    #elseif os(watchOS)
+    self.init(named: asset.name)
+    #endif
+  }
+}
+
+#if canImport(SwiftUI)
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+internal extension SwiftUI.Image {
+  init(asset: ImageAsset) {
+    let bundle = BundleToken.bundle
+    self.init(asset.name, bundle: bundle)
+  }
+
+  init(asset: ImageAsset, label: Text) {
+    let bundle = BundleToken.bundle
+    self.init(asset.name, bundle: bundle, label: label)
+  }
+
+  init(decorative asset: ImageAsset) {
+    let bundle = BundleToken.bundle
+    self.init(decorative: asset.name, bundle: bundle)
+  }
+}
+#endif
+
+// swiftlint:disable convenience_type
+private final class BundleToken {
+  static let bundle: Bundle = {
+    #if SWIFT_PACKAGE
+    return Bundle.module
+    #else
+    return Bundle(for: BundleToken.self)
+    #endif
+  }()
+}
+// swiftlint:enable convenience_type

@@ -11,6 +11,8 @@ struct AddPlaylistView: View {
     @StateObject private var viewModel: ViewModel
     @FocusState private var focus: Field?
     @State private var contentHeight: CGFloat = 0
+    /// Presented from an `.overlay`, so it gets no automatic keyboard avoidance; tracked manually.
+    @State private var keyboardHeight: CGFloat = 0
 
     private enum Field { case name, url, server, username, password }
 
@@ -40,6 +42,7 @@ struct AddPlaylistView: View {
                 overlayDialog
             }
         }
+        .onKeyboardHeightChange { keyboardHeight = $0 }
         .alert(
             "",
             isPresented: Binding(
@@ -124,7 +127,8 @@ private extension AddPlaylistView {
             }
             .padding(.horizontal, Layout.Spacing.l)
             .padding(.top, Layout.Spacing.s)
-            .padding(.bottom, Layout.Spacing.xl)
+            // Extra room while the keyboard is up so the last fields can scroll clear of it.
+            .padding(.bottom, Layout.Spacing.xl + keyboardHeight)
             .background(
                 GeometryReader { proxy in
                     Color.clear

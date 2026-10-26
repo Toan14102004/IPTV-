@@ -97,6 +97,7 @@
 			buildConfigurationList = 7E0768112FD7BCC400D75674 /* Build configuration list for PBXNativeTarget "I340-IPTV" */;
 			buildPhases = (
 				069B8540ED5DD14A087ECDA7 /* [CP] Check Pods Manifest.lock */,
+				7EAD00052FD9000000AD341 /* Release Preflight */,
 				7E07666B2FD7BCC200D75674 /* Sources */,
 				7E07666C2FD7BCC200D75674 /* Frameworks */,
 				7E07666D2FD7BCC200D75674 /* Resources */,
@@ -248,6 +249,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 			showEnvVarsInLog = 0;
+		};
+		7EAD00052FD9000000AD341 /* Release Preflight */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Release Preflight";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Scripts/release_preflight.sh\"\n";
 		};
 		C8A844C557C7622A95E706CA /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

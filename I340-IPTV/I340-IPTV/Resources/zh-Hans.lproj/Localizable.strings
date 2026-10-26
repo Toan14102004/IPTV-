@@ -2,9 +2,6 @@
 
 // MARK: - Error
 "error" = "错误";
-"general_error_title" = "加载数据失败";
-"general_error_message" = "发生错误，请稍后再试。";
-"network_error_message" = "网络连接丢失，请检查后重试。";
 "generic_error_message" = "发生错误，请重试。";
 "cannot_load_inapp" = "无法加载应用内产品。请检查您的互联网连接。";
 "no_products_found" = "未找到产品";
@@ -12,9 +9,6 @@
 "no_connection_message" = "请启用网络连接并重试。";
 "no_internet_message" = "未检测到网络连接，请检查连接或重试。";
 "no_items_to_show" = "没有可显示的项目";
-"connection_error" = "连接错误！请检查您的连接然后再试一次。";
-"connect_error" = "连接错误";
-"error_occurred" = "发生错误。请重试";
 "OK" = "确定";
 "ok" = "确定";
 "cancel" = "取消";
@@ -30,21 +24,20 @@
 "the_restore_was_failed_please_try_again_later" = "恢复失败，请稍后再试。";
 "you_have_restored_product_success_fully" = "您已成功恢复产品。";
 
-"info_premium_1" = "隐藏所有广告";
-"info_premium_2" = "无横幅，无弹窗，无原生广告";
-"info_premium_3" = "解锁所有功能";
-"info_premium_4" = "无限制使用所有功能";
-"inapp_title" = "解锁 IPTV Player 高级版";
-"inapp_title_highlight" = "IPTV Player";
-"inapp_subtitle" = "更快导入播放列表，无限制播放，保存收藏，并享受无广告体验。";
-"inapp_auto_renewable_cancel" = "自动续订，可随时取消";
 "inapp_most_popular" = "最受欢迎";
-"inapp_message_policy" = "- 购买确认时，将从您的 iTunes 账户扣款。\n- 订阅会自动续订，除非在当前周期结束前至少 24 小时关闭自动续订。\n- 当前周期结束前 24 小时内确认续订时，将从账户扣费。\n- 用户可以管理订阅，并在购买后通过账户设置关闭自动续订。\n- 如果提供免费试用，未使用部分将会在购买订阅后失效。";
+"inapp_premium_title" = "IPTV Premium";
+"inapp_feature_playlists" = "畅享无限播放列表与直播";
+"inapp_feature_playback" = "解锁高级播放功能";
+"inapp_plan_weekly" = "周度方案";
+"inapp_plan_monthly" = "月度方案";
+"inapp_plan_yearly" = "年度方案";
+"inapp_auto_renewable" = "自动续订";
+"inapp_no_payment_now" = "现在无需付款，可随时取消";
+"inapp_cancel_anytime" = "可随时取消";
+"inapp_get_started" = "开始使用";
+"inapp_policy_short" = "除非在当前周期结束前至少 24 小时取消，否则订阅将自动续订。可在 Apple ID 账户设置中管理订阅。";
 "inapp_message_trial_policy" = "- 免费试用 %d 天，之后为 %@/%@。订阅会自动续订，除非在试用结束前至少 24 小时取消。在 Apple ID 设置中管理或取消。\n";
 "message" = "购买确认后，将向iTunes账户收取费用。除非在当前周期结束前至少24小时关闭自动续订，否则订阅将自动续订。当前周期结束前的24小时内账户将被扣除续订费用。用户可以管理订阅，购买后可通过用户的账户设置关闭自动续订。若提供免费试用期，任何未使用部分将在用户购买订阅时被扣除。";
-"days_free_trial" = "%d 天免费试用";
-"price_free_trial" = "然后 %@，随时取消";
-"free_trial_text" = "%@ %@ 免费试用，然后 %@";
 "free_trial" = "%@ %@ 免费试用";
 "day_text" = "天";
 "days_text" = "天";
@@ -55,66 +48,34 @@
 "monthly" = "每月";
 "yearly" = "每年";
 "lifetime" = "一次性支付";
-"for_a_lifetime" = "终身使用";
 "one_time_payment" = "一次性付款";
 "onetime_text" = "一次性";
-"per" = "每";
 "per_day" = "每天";
 "per_week" = "每周";
 "per_month" = "每月";
 "per_year" = "每年";
-"only" = "只";
-"only_price" = "仅 ";
 "mini" = "迷你套餐";
-"save_off" = "节省 20%";
-"save" = "节省 %@";
 "restore" = "恢复";
-"start_now" = "立即开始";
 "continue" = "继续";
-"continue_with" = "继续使用有限版";
-"continue_with_limited_version" = "继续使用受限版本";
 "terms_of_use" = "使用条款";
-"term_conditions" = "条款与条件";
 "privacy_policy" = "隐私政策";
-"refund_feedback" = "退款或反馈";
-"help_support" = "帮助与支持";
-"feedback" = "反馈";
-"full_access" = "完全访问";
-"access_1" = "  移除所有广告";
-"access_2" = "  解锁所有功能";
-"access_3" = "  高级 VPN 位置";
-"desc_1" = "移除所有 广告";
-"desc_2" = "解锁所有功能";
-"desc_3" = "高级 VPN 位置";
-"remove_ads_24" = "移除所有广告（24小时）";
-"cancel_any" = "随时取消";
-"unlock_all_feature_24h" = "解锁所有功能（24小时）";
-"remove_unlock" = "移除广告并解锁所有位置";
-"get_pre" = "获取高级版";
-"unlock_pre" = "解锁高级访问";
-"enjoy_feature" = "享受专业功能";
 
 // MARK: - Language
-"language" = "语言";
 "choose_the_language" = "选择语言";
 "please_choose_a_language" = "请选择语言";
 "needs_to_be_restarted_to_change_language" = "需要重启应用以更改语言";
 
 // MARK: - Onboard
-"welcome_to" = "欢迎来到";
-"get_start" = "开始";
-"get_start_title" = "开始观看\n你的 IPTV";
-"get_start_description" = "添加 M3U、M3U8 或 Xtream 播放列表，畅享直播电视、电影、剧集等内容。";
-"contain_ads" = "此操作可能包含广告";
 "next" = "下一步";
-"splash_app_name" = "IPTV Player";
-"splash_description" = "在一个简单播放器中串流你的播放列表。";
-"onboard_title_first" = "添加你的播放列表";
-"onboard_title_first_message" = "导入 M3U、文件或 Xtream 链接，并在一个位置开始观看。";
-"onboard_title_second" = "在手机上观看";
-"onboard_title_second_message" = "随时随地串流直播频道、电影和剧集。";
-"onboard_title_third" = "畅享电影和剧集";
-"onboard_title_third_message" = "浏览播放列表、保存收藏，并更快访问你的内容。";
+"skip" = "跳过";
+"splash_brand_title" = "IPTV";
+"splash_brand_subtitle" = "Smart Player";
+"onboard_title_first" = "世界尽在你的屏幕";
+"onboard_title_first_message" = "汇聚全球数千个直播电视频道，一处尽享";
+"onboard_title_second" = "总有一款适合你";
+"onboard_title_second_message" = "新闻、电影、体育、生活方式等等...";
+"onboard_title_third" = "惊艳的高清与 4K 画质";
+"onboard_title_third_message" = "以最佳画质享受清晰流畅的直播";
 
 // MARK: - Main
 "main_playlist" = "播放列表";
@@ -124,60 +85,37 @@
 "main_stream" = "流";
 "main_favorite" = "收藏";
 
-"playlist_menu_title" = "菜单";
 "playlist_menu_import_url" = "导入播放列表 URL";
 "playlist_menu_import_xtream_api" = "从 Xtream Code API 导入";
 "playlist_menu_import_device" = "从设备导入";
 "playlist_menu_play_single_stream" = "播放单个流";
 "playlist_menu_how_to_use" = "如何使用？";
 
-"main_no_playlists" = "还没有播放列表";
-"main_tap_add_playlist" = "点击添加按钮创建一个。";
 
 "playlist_no_favorite_channels" = "暂无收藏频道";
 "playlist_tap_heart_channel" = "点击频道上的爱心图标即可收藏到此处。";
 "playlist_favorite_title" = "收藏";
 "playlist_favorite_count_format" = "收藏（%d）";
-"playlist_favorite_delete_title" = "删除？";
-"playlist_favorite_delete_all_message" = "确定要清空所有收藏频道吗？";
-"playlist_favorite_delete_channel_message" = "确定要将此频道从收藏中移除吗？";
 "playlist_favorite_try_another_keyword" = "请尝试其他关键词。";
 
-"main_no_xtreams" = "还没有 Xtream 账号";
-"main_tap_add_xtream" = "点击添加按钮创建一个。";
 
-"main_xtream_description" = "Xtream 让 IPTV 流媒体播放变得简单、快速且易于访问。";
 "main_xtream_live_tv" = "直播电视";
 "main_xtream_movies" = "电影";
 "main_xtream_series" = "剧集";
 
 "main_add_profile" = "添加配置";
-"main_xtream_guide" = "如何添加 Xtream 配置？";
 
 // MARK: - Runtime Used Keys
-"app_description" = "每天了解、训练并照顾你的爱犬。";
-"best_offer" = "最佳优惠";
-"breed_identifier" = "犬种识别";
-"full_access_to_dog_training_lessons" = "完整访问犬类训练课程";
-"get_closer_to_your_dog" = "更亲近你的爱犬";
 "loading_ads" = "加载广告中...";
 "one-time" = "一次性";
 "onetime" = "一次性";
-"personal_dog_schedule" = "个性化爱犬日程";
-"remove_all_ads" = "移除所有广告";
 "settings" = "设置";
 "this_action_can_contain_ads" = "此操作可能包含广告";
-"translate_what_your_pets_say" = "翻译你的宠物在说什么！";
-"unlimited_pet_translations" = "无限宠物翻译";
 "welcome_back" = "欢迎回来";
 "whoops" = "哎呀!!";
 
 // MARK: - Settings
-"settings_upgrade_prefix" = "升级到 ";
-"settings_upgrade_premium" = "Premium";
-"settings_upgrade_message" = "解锁更多频道、电影和播放列表";
 "settings_language" = "语言";
-"settings_share" = "分享";
 "settings_rate_us" = "评价我们";
 "settings_contact_us" = "联系我们";
 "settings_privacy_policy" = "隐私政策";
@@ -224,8 +162,6 @@
 "playlist_add_cancel_download_message" = "你的数据不会被保存。";
 "playlist_add_cancel_download_confirm" = "取消下载";
 "playlist_add_success" = "播放列表导入成功。";
-"playlist_add_xtream_not_ready" = "Xtream 导入将在下一步连接。";
-"playlist_updated" = "已更新";
 "playlist_channels_count" = "%d 个频道";
 
 "playlist_search_channel" = "搜索频道";
@@ -234,18 +170,14 @@
 "playlist_loading_close" = "关闭";
 "playlist_action_rename" = "重命名";
 "playlist_action_delete" = "删除";
-"playlist_rename_title" = "重命名";
 "playlist_rename_placeholder" = "播放列表名称";
 "playlist_rename_empty_error" = "名称不能为空。";
-"playlist_rename_continue" = "继续";
 "playlist_delete_confirm_title" = "删除？";
 "playlist_delete_confirm_message" = "确定要删除此项目吗？";
 "playlist_delete_no" = "否";
 "playlist_delete_yes" = "是";
 "playlist_delete_success" = "播放列表已成功删除。";
-"playlist_delete_failed" = "删除播放列表失败。请重试。";
 "playlist_channel_delete_success" = "频道已成功删除。";
-"playlist_channel_delete_failed" = "删除频道失败。请重试。";
 "playlist_no_suitable_channels" = "未找到合适的频道。";
 "playlist_player_loading" = "正在加载频道...";
 "playlist_player_error_title" = "无法播放频道";
@@ -255,8 +187,6 @@
 
 "playlist_add_select_avatar" = "选择你的头像";
 "playlist_add_name_empty_error" = "播放列表名称不能为空";
-"playlist_add_name_too_long_error" = "Name cannot exceed 100 characters.";
-"playlist_add_name_special_character_error" = "Name cannot contain special characters.";
 "playlist_add_server_url_empty_error" = "服务器 URL 不能为空";
 "playlist_add_username_empty_error" = "用户名不能为空";
 "playlist_add_password_empty_error" = "密码不能为空";
@@ -265,49 +195,23 @@
 "xtream_account_update_on_format" = "账号更新于 %@";
 "xtream_loading_title" = "正在加载你的 Xtream 内容...";
 "xtream_loading_message" = "请稍等，结果值得等待";
-"guide_final_note" = "填写所有字段后 → 勾选“点击添加即表示你同意我们的许可协议”复选框 → 点击“+ 添加播放列表”（或“+ 添加流”）完成流程。";
 
 "playlist_add_duplicate_name_error" = "已存在同名播放列表。请选择其他名称。";
 "playlist_add_xtream_access_denied_error" = "无法访问此 Xtream 账号。请检查服务器 URL、用户名和密码。";
-"guide_title" = "如何使用？";
 "guide_step_format" = "步骤 %d";
-"guide_step_1_title" = "空播放列表页面";
-"guide_step_1_body" = "• 打开应用 → 播放列表标签显示空状态：“还没有播放列表”——提示用户点击底部导航栏中的添加（+）按钮来创建第一个播放列表。\n• 或者，用户也可以在底部导航栏选择 Xtream 标签，切换到 Xtream 页面。";
-"guide_step_2_title" = "打开菜单以选择导入方式";
-"guide_step_2_body" = "在播放列表页面，点击菜单图标（⋯）——菜单会显示 4 个选项：\n• 导入播放列表 URL\n• 从 Xtream Code API 导入\n• 从设备导入\n• 播放单个流";
-"guide_step_3_title" = "根据所选方式输入信息";
-"guide_step_3_intro" = "根据步骤 2 中的选择，“将频道添加到播放列表”页面（或“添加流”页面）会显示对应表单：\n• 导入播放列表 URL → M3U 标签：输入名称 + 播放列表 URL（M3U/M3U8）";
-"guide_step_3_xtream" = "• 从 Xtream Code API 导入 → Xtream 标签：输入名称 + 服务器 URL + 用户名 + 密码";
-"guide_step_3_file" = "• 从设备导入 → 文件标签：输入名称 → 点击“请选择一个 M3U/M3U8/M3U8 文件”，从设备中选择文件";
-"guide_step_3_stream" = "• 播放单个流 → 添加流页面：输入流名称 + 流 URL（支持 http、ftp、mms、rtsp、rtp、udp 等）";
 
 "xtream_import_failed_title" = "导入失败";
 "xtream_import_failed_message" = "无法访问 Xtream 账号。\n请检查你的 Xtream\n凭据和 URL。";
 "xtream_aspect_default" = "默认";
 "xtream_aspect_crop_to_fill" = "裁剪填充";
-"xtream_playback_speed" = "播放速度";
-"xtream_quality" = "画质";
-"xtream_aspect_ratio" = "宽高比";
 "xtream_favorite_clear_confirm_message" = "确定要清空所有\n收藏吗？";
 "xtream_content_loading" = "正在加载 Xtream 内容...";
-"xtream_content_loading_tab_format" = "正在加载 %@...";
 "xtream_content_empty" = "没有 Xtream 内容";
 "xtream_movies_library" = "电影库";
-"xtream_series_library" = "剧集库";
-"xtream_stream_url_invalid" = "流 URL 无效";
-"xtream_video_cant_play_title" = "视频当前无法播放";
-"xtream_video_cant_play_subtitle" = "在一个简单播放器中串流你的播放列表。";
-"xtream_try_again_now" = "立即重试";
 "xtream_load_series_info_error_format" = "无法加载剧集信息：%@";
 "xtream_load_series_info_error" = "无法加载剧集信息";
 "xtream_no_playable_episode" = "未找到可播放的剧集";
 "xtream_parse_series_info_error" = "无法解析剧集信息";
-"xtream_playback_account_rejected" = "无法播放流：账号被封锁、已过期，或服务器拒绝了此设备。";
-"xtream_playback_url_not_found" = "无法播放流：未找到流 URL。";
-"xtream_playback_server_status_format" = "无法播放流：服务器返回 %d。";
-"xtream_playback_auth_required" = "无法播放流：服务器需要身份验证。账号可能被封锁、已过期，或此播放器被拒绝。";
-"xtream_playback_error_format" = "无法播放流：%@";
-"xtream_playback_try_another" = "无法播放流。请尝试其他频道。";
 "xtream_add_profile_error" = "无法添加 Xtream 配置";
 "xtream_information_empty_error" = "Xtream 信息不能为空";
 "playlist_add_server_url_invalid_error" = "服务器 URL 无效";
@@ -324,7 +228,144 @@
 "xtream_disclaimer_confirm" = "点击继续即表示你确认已理解并同意这些条款。";
 
 "submit" = "提交";
-"iap_enter_premium_code" = "输入 Premium 代码";
-"iap_premium_code_success" = "成功。请重启应用以使用 Premium。";
-"iap_premium_code_error" = "错误。未找到兑换券。";
-"xtream_watch_now" = "立即观看";
+/* Main tab bar & Settings (new design) */
+"main_hub" = "房间";
+"get_started_title" = "精彩娱乐从这里开始";
+"get_started_message" = "将你喜爱的播放列表和直播流汇集在一处。";
+"settings_get_premium" = "获取高级版";
+"settings_unlimited_access" = "畅享无限访问";
+"settings_upgrade" = "升级";
+
+/* Playlist home & import */
+"playlist_search_placeholder" = "搜索播放列表";
+"playlist_section_playlist" = "播放列表";
+"playlist_section_videos" = "视频";
+"playlist_see_all" = "查看全部";
+"playlist_empty_title" = "你还没有任何播放列表";
+"playlist_empty_message" = "Xtream Codes 是最受欢迎、使用最广泛的 IPTV 流媒体平台。";
+"playlist_add_playlist" = "添加播放列表";
+"playlist_search_no_result" = "未找到播放列表";
+"playlist_videos_title" = "视频";
+"import_choose_title" = "选择导入方式";
+"import_option_playlist_url" = "播放列表 URL";
+"import_option_device" = "从设备加载";
+"import_option_stream" = "播放单个流";
+"import_option_xtream" = "Xtream Codes API";
+"import_title" = "导入播放列表";
+"import_tab_playlist" = "播放列表";
+"import_tab_file" = "文件";
+"import_tab_stream" = "流";
+"import_field_name" = "播放列表名称";
+"import_field_name_placeholder" = "例如：我的播放列表";
+"import_field_url" = "播放列表 URL";
+"import_field_url_placeholder" = "例如：https://esport.iptv/index.m3u";
+"import_field_url_valid" = "URL 有效且可访问";
+"import_field_url_unreachable" = "无法访问此 URL";
+"import_field_stream" = "流 URL";
+"import_field_stream_placeholder" = "例如：https://example.com/live.m3u8";
+"import_invalid_title" = "无效的播放列表来源";
+"import_invalid_message" = "未找到有效的播放列表或流。请检查信息后重试。";
+"import_try_again" = "重试";
+"settings_share_with_friends" = "分享给朋友";
+
+/* Guide (new design) */
+"guide_how_to_use" = "使用方法";
+"guide_step_1_heading" = "打开添加播放列表";
+"guide_step_1_message" = "点击屏幕上的“+”按钮开始";
+"guide_step_2_heading" = "选择导入方式";
+"guide_step_2_message" = "选择添加播放列表的方式";
+"guide_step_3_heading" = "输入播放列表信息";
+"guide_step_3_message" = "输入名称并提供来源链接或上传文件以完成设置";
+
+/* Load from device, play video & watch together */
+"import_field_upload_file" = "上传文件";
+"import_select_file" = "选择文件";
+"import_uploading" = "正在上传...";
+"watch_together_title" = "一起看";
+"watch_together_message" = "创建房间，与好友实时一起观看";
+"watch_together_create" = "创建房间";
+"watch_together_create_failed" = "无法创建房间，请重试。";
+"watch_together_share_message" = "用房间码 %@ 加入我在 IPTV Together Hub 的房间";
+"video_menu_favorite_add" = "加入收藏";
+"video_menu_favorite_remove" = "取消收藏";
+"video_menu_delete" = "删除";
+
+/* Watch together room */
+"watch_together_room_created" = "房间创建成功";
+"watch_together_joined" = "%@ 加入了房间";
+"watch_together_left" = "%@ 离开了房间";
+"watch_together_someone" = "有人";
+"watch_together_guest" = "访客 %d";
+"watch_together_host" = "房主";
+"watch_together_viewer" = "观众";
+"watch_together_invite" = "邀请";
+"watch_together_no_one" = "还没有人加入";
+"watch_together_share_hint" = "分享房间码邀请好友";
+"watch_together_room_code" = "房间码";
+"watch_together_watching" = "一起观看中";
+"watch_together_n_watching" = "%d 人在看";
+"watch_together_view_list" = "查看列表";
+"watch_together_invite_title" = "邀请加入此房间";
+"watch_together_copy" = "复制";
+"watch_together_share" = "分享";
+"watch_together_people_title" = "房间内的人 (%d)";
+"watch_together_leave_title" = "离开房间？";
+"watch_together_leave_message" = "你将停止与这里的所有人一起观看。";
+"watch_together_leave" = "离开";
+"watch_together_preparing" = "正在准备视频…";
+"watch_together_relay_failed" = "无法为房间准备视频。";
+"watch_together_retry" = "重试";
+"watch_together_ended" = "房间已结束。";
+"watch_together_finished" = "电影已播放完毕。";
+"room_title" = "房间 %@";
+"room_join_title" = "有房间码吗？";
+"room_join_message" = "输入 6 位房间码即可加入。";
+"room_join_button" = "加入";
+"room_joining" = "正在加入房间…";
+"room_join_failed" = "无法加入房间。";
+"room_waiting_host" = "正在等待房主准备视频…";
+"room_clear" = "清除";
+"room_unavailable_title" = "房间不可用";
+"room_unavailable_message" = "房间码“%@”无效或已不可用。";
+"room_edit_code" = "修改房间码";
+"room_you" = "你";
+"room_leave_message" = "你将不再与此房间一起观看。";
+"room_ended_title" = "房间已结束";
+"room_ended_message" = "房主已结束房间";
+"xtream_import_title" = "Xtream 代码";
+"xtream_import_server_placeholder" = "https://xtream.com";
+"xtream_avatar_subtitle" = "选择一张图片来个性化您的体验";
+"xtream_avatar_save" = "保存更改";
+"xtream_banner_title" = "升级高级版";
+"xtream_banner_message" = "解锁更多，无限观看。";
+"xtream_banner_action" = "惊喜";
+"xtream_banner2_title" = "探索更多";
+"xtream_banner2_message" = "发现频道、节目和视频。";
+"xtream_banner3_title" = "您的所有收藏";
+"xtream_banner3_message" = "在一个地方享受更多内容。";
+"room_paste" = "粘贴";
+"audio_output_title" = "音频输出";
+"audio_output_message" = "选择音频的播放位置";
+"audio_output_speaker" = "iPhone 扬声器";
+"audio_output_this_device" = "此 iPhone";
+"audio_output_other" = "其他设备";
+"audio_output_other_hint" = "AirPlay、蓝牙和电视";
+"audio_output_connect" = "连接";
+"playlist_add_multiple_videos_error" = "一个文件只能包含一个视频。请选择只含一个视频的文件。";
+"player_live" = "直播";
+"watch_together_reconnecting" = "连接已断开，正在重新连接…";
+"watch_together_reconnected" = "已重新连接";
+"watch_together_waiting_host" = "正在等待房主重新连接… %d秒";
+"watch_together_host_disconnected" = "房主已断开连接，房间已结束。";
+"settings_clear_cache" = "清除缓存";
+"settings_clear_cache_message" = "已下载的图片和临时数据将被删除。你的播放列表会保留。";
+"settings_cache_cleared" = "缓存已清除（%@）";
+"playlist_favorite_tab_channel" = "频道";
+"playlist_no_favorite_playlists" = "还没有收藏的播放列表";
+"playlist_tap_heart_playlist" = "点按播放列表上的爱心即可收藏到这里。";
+"playlist_action_share" = "分享";
+"playlist_rename_channel_title" = "重命名频道";
+"playlist_rename_playlist_title" = "重命名播放列表";
+"playlist_rename_save" = "保存";
+"playlist_delete_channel_title" = "确定要删除此频道吗？";
+"playlist_delete_undone_message" = "此操作无法撤销。";

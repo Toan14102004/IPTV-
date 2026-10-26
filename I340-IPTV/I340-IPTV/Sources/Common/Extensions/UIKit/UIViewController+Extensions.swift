@@ -68,58 +68,6 @@ extension UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func showImageAlert(
-        title : String? = nil,
-        subtitle : String? = nil,
-        image: UIImage? = nil,
-        actionHandler: ((_ text: String?) -> Void)? = nil
-    ) {
-        let alert = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
-        
-        //Insert image
-        
-        let customView = UIView()
-        alert.view.addSubview(customView)
-        customView.translatesAutoresizingMaskIntoConstraints = false
-        customView.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 100).isActive = true
-        customView.rightAnchor.constraint(equalTo: alert.view.rightAnchor, constant: -10).isActive = true
-        customView.leftAnchor.constraint(equalTo: alert.view.leftAnchor, constant: 10).isActive = true
-        customView.heightAnchor.constraint(equalToConstant: 120).isActive = true
-        
-        alert.view.translatesAutoresizingMaskIntoConstraints = false
-        alert.view.heightAnchor.constraint(equalToConstant: 320).isActive = true
-                    
-        let dogImage = UIImageView(frame: CGRect.zero)
-        dogImage.image = image
-        dogImage.translatesAutoresizingMaskIntoConstraints = false
-        dogImage.layer.cornerRadius = 12
-        dogImage.contentMode = .scaleAspectFill
-        dogImage.layer.masksToBounds = true
-        customView.addSubview(dogImage)
-        
-        let widthConstraint = NSLayoutConstraint(item: dogImage, attribute: .width, relatedBy: .equal,
-                                                 toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 120)
-
-        let heightConstraint = NSLayoutConstraint(item: dogImage, attribute: .height, relatedBy: .equal,
-                                                  toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 120)
-
-        let xConstraint = NSLayoutConstraint(item: dogImage, attribute: .centerX, relatedBy: .equal, toItem: customView, attribute: .centerX, multiplier: 1, constant: 0)
-
-        let yConstraint = NSLayoutConstraint(item: dogImage, attribute: .centerY, relatedBy: .equal, toItem: customView, attribute: .centerY, multiplier: 1, constant: 0)
-
-        NSLayoutConstraint.activate([widthConstraint, heightConstraint, xConstraint, yConstraint])
-                
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action:UIAlertAction) in
-            guard let textField =  alert.textFields?.first else {
-                actionHandler?(nil)
-                return
-            }
-            actionHandler?(textField.text)
-        }))
-        //Add more actions as you see fit
-        self.present(alert, animated: true, completion: nil)
-    }
-    
     func showRateAlert(cancelHandler: (() -> Swift.Void)? = nil) {
         if !UserDefaultManager.shared().isRated {
             let alert = UIAlertController(title: "Please give us your feedback", message: "Your opinion is very important to us. We appreciate your feedback and will use it to evaluate changes and make improvements in our app.", preferredStyle: .alert)

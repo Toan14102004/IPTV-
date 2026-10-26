@@ -30,8 +30,8 @@ enum Configs {
         static let perPage = 10
         static let networkTimeout: Double = 30
         static var Base_URL = "https://your-api.com/api/v1/"
-        static let AES_SECRET = "YourAESSecretKey32CharactersLong"
-        static let AES_IV = "YourAESIV16Chars"
+        /// Socket.IO server of the watch-together rooms (namespace `/rooms`).
+        static let roomsServerURL = "https://iptv-api.limgrow.com"
         static let remoteConfigMinimumFetchInterval = 0.0
     }
     
@@ -47,10 +47,6 @@ enum Configs {
         static let enableLocalNotification = AppConfiguration.shared.enableLocalNotification()
         static let timeTriggerNoti = AppConfiguration.shared.timeTriggerNotification()
         static let contentTrigger: [(title: String, body: String)] = AppConfiguration.shared.contentTrigger()
-    }
-    
-    enum AppsFlyer {
-        static let appsFlyerDevKey = AppConfiguration.shared.appsFlyerDevKey()
     }
     
     enum Domain {

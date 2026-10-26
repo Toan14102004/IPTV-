@@ -36,13 +36,3 @@ extension Endpoint {
     var headers: [String: String] { [:] }
     var body: Encodable? { nil }
 }
-
-/// Ad-hoc endpoint for one-off calls.
-struct RawEndpoint: Endpoint {
-    var baseURL: String?
-    var path: String
-    var method: HTTPMethod = .get
-    var query: [String: String] = [:]
-    var headers: [String: String] = [:]
-    var body: Encodable?
-}

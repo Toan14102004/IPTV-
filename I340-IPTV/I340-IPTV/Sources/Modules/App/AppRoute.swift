@@ -5,11 +5,12 @@
 
 import Foundation
 
-/// What the window root is showing. Screens opened from Main are pushed on the root `FlowStack`
+/// What the window root is showing. Screens opened from Content are pushed on the root `FlowStack`
 /// (see `RootView.Coordinator.Navigation`).
 enum AppRoute: Equatable {
     case splash(isFromLanguageSetting: Bool)
+    case getStarted
     case language
     case onboard
-    case main
+    case content
 }

@@ -29,6 +29,8 @@ extension IPTVPlaylistError {
             return localized("generic_error_message", fallback: "An error occurred. Please try again.")
         case .unplayablePlaylist:
             return localized("playlist_add_unplayable_file_error", fallback: "This file cannot be played. Please choose another file.")
+        case .multipleVideos:
+            return localized("playlist_add_multiple_videos_error", fallback: "A file can contain only one video. Please choose a file with a single video.")
         case .duplicateName:
             return localized("playlist_add_duplicate_name_error", fallback: "A playlist with this name already exists. Please choose another name.")
         case .xtreamAccessDenied:

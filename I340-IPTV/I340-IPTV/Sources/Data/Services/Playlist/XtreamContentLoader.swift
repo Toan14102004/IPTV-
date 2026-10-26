@@ -3,7 +3,8 @@ import Foundation
 final class XtreamContentLoader {
     private struct InfoResponse: Decodable {
         let userInfo: UserInfo
-        let serverInfo: ServerInfo
+        /// Servers answer a wrong login with only `user_info` (auth 0), so this can be missing.
+        let serverInfo: ServerInfo?
         
         enum CodingKeys: String, CodingKey {
             case userInfo = "user_info"

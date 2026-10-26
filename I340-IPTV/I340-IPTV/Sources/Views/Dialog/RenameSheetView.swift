@@ -5,10 +5,12 @@
 
 import SwiftUI
 
-/// Bottom sheet with a single text field. Present it with `.popup(item:)` and
-/// `params.bottomPopup().useKeyboardSafeArea(true).backgroundColor(.dialogDim)`.
+/// Rename card of the new design (Figma "rename"): title, labelled text field, Cancel and Save.
+/// Present it with `.popup(item:)` and
+/// `params.centerPopup().useKeyboardSafeArea(true).backgroundColor(.dialogDimLight)`.
 struct RenameSheetView: View {
     let title: String
+    /// Label above the field.
     let placeholder: String
     let continueTitle: String
     let emptyNameMessage: String
@@ -39,63 +41,63 @@ struct RenameSheetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ZStack(alignment: .top) {
-                Capsule()
-                    .fill(Asset.Color.dividerGray.color)
-                    .frame(width: 60, height: 6)
-                    .padding(.top, Layout.Spacing.s)
-
-                HStack {
-                    Spacer()
-                    Button(action: onClose) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 18))
-                            .foregroundColor(Asset.Color.textGray.color)
-                            .frame(width: 28, height: 28)
-                    }
-                    .padding(.top, Layout.Spacing.m)
-                    .padding(.trailing, 20)
-                }
-            }
-            .frame(height: 52)
-
             Text(title)
-                .font(FontFamily.Poppins.medium.font(size: 14))
-                .foregroundColor(.white)
-                .padding(.horizontal, Layout.Spacing.l)
+                .font(Typography.subtitleMedium)
+                .foregroundStyle(Color.text1)
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, Layout.Spacing.m)
 
-            TextField("", text: $name, prompt: Text(placeholder).foregroundColor(Color.white.opacity(0.4)))
-                .font(FontFamily.Poppins.regular.font(size: 14))
-                .foregroundColor(.white)
-                .tint(Asset.Color.accentBlue.color)
+            Text(placeholder)
+                .font(Typography.labelMedium)
+                .foregroundStyle(Color.text2)
+                .padding(.horizontal, Layout.Spacing.m)
+                .padding(.bottom, Layout.Spacing.s)
+
+            TextField("", text: $name)
+                .font(Typography.bodyMedium)
+                .foregroundStyle(Color.text1)
+                .tint(Color.primary1)
                 .focused($isFocused)
                 .submitLabel(.done)
                 .onSubmit(submit)
                 .padding(.horizontal, Layout.Spacing.m)
-                .frame(height: 50)
-                .background(Asset.Color.separator.color)
-                .clipShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.large))
-                .padding(.horizontal, Layout.Spacing.l)
-                .padding(.top, Layout.Spacing.s)
+                .frame(height: 56)
+                .background(Color.surface1, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.neutralStroke, lineWidth: 1))
+                .shadow(.card)
+                .padding(.horizontal, Layout.Spacing.m)
 
-            Button(action: submit) {
-                Text(continueTitle)
-                    .font(FontFamily.Poppins.medium.font(size: 16))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 48)
+            HStack(spacing: Layout.Spacing.sm) {
+                Button(action: onClose) {
+                    Text("cancel".localized(fallback: "Cancel"))
+                        .font(Typography.bodyLarge)
+                        .foregroundStyle(Color.text2)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.text2, lineWidth: 1))
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+
+                Button(action: submit) {
+                    Text(continueTitle)
+                        .font(Typography.subtitleSmall)
+                        .foregroundStyle(Color.text4)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(Color.primary1, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.gradient(cornerRadius: Layout.CornerRadius.large))
-            .padding(.horizontal, Layout.Spacing.l)
-            .padding(.top, 40)
-
-            Spacer(minLength: 0)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .padding(.horizontal, Layout.Spacing.m)
+            .padding(.top, Layout.Spacing.l)
         }
+        .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .frame(height: 244)
-        .background(
-            TopRoundedShape(radius: 32).fill(Asset.Color.sheetSurface.color).ignoresSafeArea(edges: .bottom)
-        )
+        .background(Color.background1, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .padding(.horizontal, Layout.Spacing.m)
         .toast(message: $toastMessage)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { isFocused = true }

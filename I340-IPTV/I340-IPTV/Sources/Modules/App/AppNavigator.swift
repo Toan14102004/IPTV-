@@ -23,7 +23,6 @@ enum AppNavigator {
         navigator?.presentCover(screen)
     }
 
-    /// Pops the pushed screen or dismisses the presented one that is on top.
     static func back() {
         navigator?.goBack()
     }
@@ -43,7 +42,6 @@ final class PaywallCenter {
 
     weak var delegate: PaywallDelegate?
 
-    /// Called by the paywall once it has been closed.
     func finish(isPurchased: Bool) {
         let receiver = delegate
         delegate = nil

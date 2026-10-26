@@ -155,10 +155,6 @@ final class IAPProduct {
     }
 }
 
-struct IAPProductContants {
-    static var productSelected: IAPProduct!
-}
-
 extension Product {
     var priceNumber: NSDecimalNumber {
         NSDecimalNumber(decimal: price)

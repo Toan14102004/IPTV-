@@ -31,14 +31,14 @@ target 'I340-IPTV' do
   pod 'Loaf', '= 0.7.0'
   
   pod 'Kingfisher', '= 7.11.0'
+
+  # Watch-together rooms (Socket.IO v4 server)
+  pod 'Socket.IO-Client-Swift', '= 16.1.1'
   
 
   #Alamofire
   pod 'Alamofire', '= 5.9.1'
   
-  #AppsFlyerFramework
-  pod 'AppsFlyerFramework'
-  pod 'PurchaseConnector', '= 6.17.1'
   
   # Adjust
   pod 'Adjust', '~> 5.8.0'

@@ -8,9 +8,7 @@ import FBSDKCoreKit
 import Firebase
 import FirebaseCore
 import Foundation
-import PurchaseConnector
 import Siren
-import StoreKit
 import UIKit
 
 /// Start-up of the third-party SDKs and the system events the app forwards to them.
@@ -70,21 +68,5 @@ final class SystemEventsHandler: NSObject {
             sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
             annotation: options[UIApplication.OpenURLOptionsKey.annotation]
         )
-    }
-}
-
-// MARK: - PurchaseConnector
-
-extension SystemEventsHandler: PurchaseRevenueDataSource, PurchaseRevenueDelegate {
-    func didReceivePurchaseRevenueValidationInfo(_ validationInfo: [AnyHashable: Any]?, error: Error?) {
-        print("PurchaseRevenueDelegate: \(String(describing: validationInfo))")
-        print("PurchaseRevenueDelegate Error: \(String(describing: error?.localizedDescription))")
-    }
-
-    func purchaseRevenueAdditionalParameters(
-        for products: Set<SKProduct>,
-        transactions: Set<SKPaymentTransaction>?
-    ) -> [AnyHashable: Any]? {
-        ["additionalParameters": ["param1": "value1", "param2": "value2"]]
     }
 }

@@ -1,1 +1,4 @@
 .DS_Store
+
+# Figma exports and scratch files
+.figma-tmp/

@@ -17,7 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let systemEventsHandler = SystemEventsHandler()
     let pushNotificationsHandler = PushNotificationsHandler()
-    let deepLinksHandler = DeepLinksHandler()
 
     static func share() -> AppDelegate {
         UIApplication.shared.delegate as! AppDelegate

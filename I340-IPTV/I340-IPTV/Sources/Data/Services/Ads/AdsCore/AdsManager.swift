@@ -18,7 +18,6 @@ final class AdsManager: NSObject {
     
     // Ad managers
     var interstitialAdUtils: InterstitialAdHandler!
-    var backwardInterstitialAdHandler: InterstitialAdHandler!
     var openInterstitialFirstUtils: InterstitialAdHandler!
     var openInterstitialAd2FUtils: InterstitialAdHandler!
     var openInterstitialAdMFUtils: InterstitialAdHandler!
@@ -61,12 +60,7 @@ final class AdsManager: NSObject {
             adId: .ADSInterstitialAdsID,
             type: .COMMON
         )
-        
-//        backwardInterstitialAdHandler = InterstitialAdHandler(
-//            adId: Configs.AdvertisementID.ADSInterstitialBackwardAdsID,
-//            type: .BACKWARD
-//        )
-        
+
         openInterstitialFirstUtils = InterstitialAdHandler(
             adId: Configs.AdvertisementID.ADSInterstitialOpenAppID,
             type: .OPEN,
@@ -174,7 +168,6 @@ final class AdsManager: NSObject {
                 }
                 
                 self.interstitialAdUtils.loadAd(isRefresh: true)
-             //   self.backwardInterstitialAdHandler.loadAd(isRefresh: true)
                 self.backgroundInterstitialUtils.loadAd(isRefresh: true)
             }
         }
@@ -204,29 +197,7 @@ final class AdsManager: NSObject {
             }
         )
     }
-    
-//    func showInterBackwardAd(
-//        from viewController: UIViewController,
-//        callback: @escaping (Bool) -> Void
-//    ) {
-//        guard Configs.Advertisement.canRequestAndShowAds else {
-//            callback(false)
-//            return
-//        }
-//        
-//        if showInter2FIfAvailable(from: viewController, callback: callback) {
-//            return
-//        }
-//        
-//        backwardInterstitialAdHandler.showAd(
-//            from: viewController,
-//            onAdsShowed: {},
-//            onAdsClosed: { isUserInteraction in
-//                callback(isUserInteraction)
-//            }
-//        )
-//    }
-    
+
     func showInter2FIfAvailable(
         from viewController: UIViewController,
         callback: @escaping (Bool) -> Void

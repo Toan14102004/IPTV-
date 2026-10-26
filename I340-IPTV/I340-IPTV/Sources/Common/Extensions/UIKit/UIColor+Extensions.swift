@@ -8,11 +8,6 @@
 
 import UIKit
 
-enum CustomColor {
-    case inAppSelect
-    case inAppNonSelect
-}
-
 extension UIColor {
     /// Creates a color object using the hex integer RGB component values.
     /// - Parameters:

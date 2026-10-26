@@ -22,7 +22,7 @@ extension SettingsView {
         var titleKey: String {
             switch self {
             case .language: "settings_language"
-            case .share: "settings_share"
+            case .share: "settings_share_with_friends"
             case .rateUs: "settings_rate_us"
             case .contactUs: "settings_contact_us"
             case .privacyPolicy: "settings_privacy_policy"
@@ -34,18 +34,13 @@ extension SettingsView {
         var fallbackTitle: String {
             switch self {
             case .language: "Language"
-            case .share: "Share"
+            case .share: "Share With Friends"
             case .rateUs: "Rate Us"
             case .contactUs: "Contact us"
             case .privacyPolicy: "Privacy Policy"
-            case .termsOfUse: "Terms of use"
+            case .termsOfUse: "Terms of Use"
             case .clearCache: "Clear cache"
             }
-        }
-
-        /// Icons drawn in white are tinted to match the red ones.
-        var iconTint: Color? {
-            self == .clearCache ? Asset.Color.brandRed.color : nil
         }
 
         var icon: ImageAsset {
@@ -59,6 +54,17 @@ extension SettingsView {
             case .clearCache: Asset.Icon.icReload
             }
         }
+
+        var tint: Color {
+            switch self {
+            case .rateUs: Color(hex: 0xA478FD)
+            case .language: Color(hex: 0xFFBC40)
+            case .share: Color(hex: 0x40A9FF)
+            case .termsOfUse: Color(hex: 0x00E099)
+            case .privacyPolicy: Color(hex: 0xFF8495)
+            case .contactUs, .clearCache: .primary1
+            }
+        }
     }
 
     final class ViewModel: BaseViewModel {
@@ -68,11 +74,11 @@ extension SettingsView {
 
         @Injected private var cache: CacheService
 
-        let options = Option.allCases
-        private let onBack: () -> Void
+        /// Order of the design. Contact us and Clear cache are not in it.
+        let options: [Option] = [.rateUs, .language, .share, .termsOfUse, .privacyPolicy]
+        let onBack: (() -> Void)?
 
-        /// `onBack` pops the screen; the caller decides how (UIKit pop today, FlowStack later).
-        init(onBack: @escaping () -> Void) {
+        init(onBack: (() -> Void)?) {
             self.onBack = onBack
             IAPHelper.shared().subscriptionSucceed { [weak self] isPurchased in
                 if isPurchased {
@@ -88,16 +94,19 @@ extension SettingsView {
         }
 
         var screenTitle: String { localized("settings", fallback: "Settings") }
-        var upgradePrefix: String { localized("settings_upgrade_prefix", fallback: "Upgrade to ") }
-        var upgradePremium: String { localized("settings_upgrade_premium", fallback: "Premium") }
-        var upgradeMessage: String {
-            localized("settings_upgrade_message", fallback: "Unlock more channels, movies and playlists")
-        }
+        var premiumTitle: String { localized("settings_get_premium", fallback: "Get PREMIUM") }
+        var premiumMessage: String { localized("settings_unlimited_access", fallback: "To Unlimited access") }
+        var upgradeTitle: String { localized("settings_upgrade", fallback: "Upgrade") }
 
         // MARK: - Actions
 
         func didTapBack() {
+            guard let onBack else { return }
             InterstitialGuard.perform(onBack)
+        }
+
+        var backAction: (() -> Void)? {
+            onBack == nil ? nil : { [weak self] in self?.didTapBack() }
         }
 
         func didTapPremium() {

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AppsFlyerLib
 import AdServices
 import Alamofire
 import AdjustSdk
@@ -489,7 +488,6 @@ class EventTrackingHelper: NSObject {
         configAdjust()
         configSearchAds()
         trackFirstOpenIfNeeded()
-        appFlyersConfigs()
         tiktokConfig()
     }
     
@@ -507,17 +505,6 @@ class EventTrackingHelper: NSObject {
             Adjust.trackThirdPartySharing(tps)
         }
         adjustConfig(DefaultConfigToken.adjustToken.rawValue) // init adjust sdk
-    }
-    
-    private func appFlyersConfigs() {
-        AppsFlyerLib.shared().appsFlyerDevKey = Configs.AppsFlyer.appsFlyerDevKey
-        AppsFlyerLib.shared().appleAppID = Configs.InfoApp.appIdWithoutIdPrefix
-#if DEBUG
-        AppsFlyerLib.shared().isDebug = true
-#endif
-        AppsFlyerLib.shared().waitForATTUserAuthorization(timeoutInterval: 30)
-        
-        AppsFlyerLib.shared().start()
     }
     
     func logEventInApp(_ product: IAPProduct?, type: EventTrackingType) {

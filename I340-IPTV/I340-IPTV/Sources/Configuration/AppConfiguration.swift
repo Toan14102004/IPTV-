@@ -12,7 +12,6 @@ final class AppConfiguration {
     private var advertisementInfos: [String: Any] = [:]
     private var inAppPurcharseInfos: [String: Any] = [:]
     private var localNotificationInfos: [String: Any] = [:]
-    private var appsFlyer: [String: Any] = [:]
     private var domain: [String: Any] = [:]
     private var trackingInfos: [String: Any] = [:]
 
@@ -129,10 +128,6 @@ final class AppConfiguration {
         return messages
     }
     
-    func appsFlyerDevKey() -> String {
-        return appsFlyer["AppsFlyerDevKey"] as! String
-    }
-    
     func trackingUrl() -> String {
         return domain["SearchAdsTrackingDomain"] as! String
     }
@@ -143,7 +138,6 @@ final class AppConfiguration {
         advertisementInfos = AppConfiguration.stringValue(forKey: "Advertisement") as! [String : Any]
         inAppPurcharseInfos = AppConfiguration.stringValue(forKey: "InAppPurchase") as! [String : Any]
         localNotificationInfos = AppConfiguration.stringValue(forKey: "LocalNotification") as! [String : Any]
-        appsFlyer = AppConfiguration.stringValue(forKey: "AppsFlyer") as! [String : Any]
         trackingInfos = AppConfiguration.stringValue(forKey: "Tracking") as! [String : Any]
     }
 }

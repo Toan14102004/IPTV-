@@ -1,4 +1,5 @@
 import Foundation
+import AVFoundation
 import Darwin
 
 enum IPTVPlaylistError: Error {
@@ -16,6 +17,7 @@ enum IPTVPlaylistError: Error {
     case channelNotFound
     case unplayablePlaylist
     case xtreamAccessDenied
+    case multipleVideos
 }
 
 /// Imports, stores and edits the playlists (M3U links, files, single streams, Xtream profiles).
@@ -96,6 +98,11 @@ final class IPTVPlaylistManager {
     }
 
     func deletePlaylist(id: String) async throws {
+        // Drop the Keychain password too, otherwise it outlives the playlist that referenced it.
+        if let playlist = try? await repository.getPlaylist(id: id), playlist.source == .xtream {
+            let reference = XtreamProfilePayload.decode(from: playlist.url).passwordReference
+            XtreamCredentialStore.delete(reference: reference)
+        }
         try await repository.deletePlaylist(id: id)
     }
 
@@ -211,9 +218,15 @@ final class IPTVPlaylistManager {
 
         guard !Self.isHLSManifest(content) else { throw IPTVPlaylistError.unplayablePlaylist }
 
-        let channels = parser.parse(m3uContent: content, baseURL: sourceURL)
+        var channels = parser.parse(m3uContent: content, baseURL: sourceURL)
             .filter { Self.isPlayableStreamURL($0.url) }
         guard !channels.isEmpty else { throw IPTVPlaylistError.unplayablePlaylist }
+
+        // A device file is one video: it gets one card in VIDEOS (a playlist is what a link imports).
+        guard channels.count == 1 else { throw IPTVPlaylistError.multipleVideos }
+        if channels[0].duration <= 0, let url = URL(string: channels[0].url) {
+            channels[0].duration = await Self.duration(of: url)
+        }
 
         return try await savePlaylist(
             name: playlistName,
@@ -221,6 +234,24 @@ final class IPTVPlaylistManager {
             source: .file,
             channels: channels
         )
+    }
+
+    /// Length in whole seconds, read from the file's header; -1 when it can't be read in time.
+    private static func duration(of url: URL) async -> Int {
+        let asset = AVURLAsset(url: url)
+        return await withTaskGroup(of: Int.self) { group in
+            group.addTask {
+                guard let time = try? await asset.load(.duration), time.seconds.isFinite, time.seconds > 0 else { return -1 }
+                return Int(time.seconds.rounded())
+            }
+            group.addTask {
+                try? await Task.sleep(nanoseconds: 8_000_000_000)
+                return -1
+            }
+            let first = await group.next() ?? -1
+            group.cancelAll()
+            return first
+        }
     }
 
     func importSingleStream(name: String? = nil, url: String) async throws -> IPTVPlaylist {
@@ -261,7 +292,9 @@ final class IPTVPlaylistManager {
             let title = defaultChannelName?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
                 ? defaultChannelName!
                 : Self.fallbackName(from: url)
-            return [IPTVChannel(title: title, url: url.absoluteString, groupTitle: "Stream")]
+            var channel = IPTVChannel(title: title, url: url.absoluteString, groupTitle: "Stream")
+            channel.duration = await Self.duration(of: url)
+            return [channel]
         }
 
         let parsedChannels = parser.parse(m3uContent: content, baseURL: url)
@@ -334,11 +367,16 @@ final class IPTVPlaylistManager {
     }
     
     private func saveSingleStream(name streamName: String, url streamURL: String) async throws -> IPTVPlaylist {
-        let channel = IPTVChannel(
+        var channel = IPTVChannel(
             title: streamName,
             url: streamURL,
             groupTitle: "Stream"
         )
+        // A live stream never resolves a duration in time and stays -1 ("--:--"); a VOD-style
+        // direct link does, same as a device file.
+        if let url = URL(string: streamURL) {
+            channel.duration = await Self.duration(of: url)
+        }
         return try await savePlaylist(
             name: channel.title,
             url: streamURL,

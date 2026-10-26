@@ -30,6 +30,4 @@ struct IPTVChannel: Codable, Hashable {
     }
 }
 
-typealias IPTVChanel = IPTVChannel
-
 extension IPTVChannel: Identifiable {}

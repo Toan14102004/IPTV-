@@ -13,6 +13,7 @@ struct XtreamProfileItem: Identifiable, Equatable {
     let password: String
     let avatarName: String
     let updatedText: String
+    let channelCount: Int
     
     init(
         id: String = UUID().uuidString,
@@ -21,7 +22,8 @@ struct XtreamProfileItem: Identifiable, Equatable {
         serverURL: String,
         password: String = "",
         avatarName: String,
-        updatedText: String
+        updatedText: String,
+        channelCount: Int = 0
     ) {
         self.id = id
         self.name = name
@@ -30,5 +32,6 @@ struct XtreamProfileItem: Identifiable, Equatable {
         self.password = password
         self.avatarName = avatarName
         self.updatedText = updatedText
+        self.channelCount = channelCount
     }
 }

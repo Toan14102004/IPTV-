@@ -96,5 +96,3 @@ EnableLocalNotification     = YES
 TimeTriggerNotification     = 86400
 ContentTriggerDescription   = Upgrade your account to Premium so you can use all functions today.
 
-//AppsFlyer
-AppsFlyerDevKey             = your_appsflyer_dev_key

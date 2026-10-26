@@ -1,6 +1,6 @@
 //
 //  Language.swift
-//  DogTranslator
+//  I340_IPTV
 //
 //  Created by Foxcode on 07/08/2024.
 //

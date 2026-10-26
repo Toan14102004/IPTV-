@@ -47,12 +47,14 @@ struct RootView: View {
         switch viewModel.route {
         case let .splash(isFromLanguageSetting):
             SplashView(isFromLanguageSetting: isFromLanguageSetting)
+        case .getStarted:
+            GetStartedView()
         case .language:
             LanguageView(context: .onboarding)
         case .onboard:
             OnboardView()
-        case .main:
-            MainView()
+        case .content:
+            ContentView()
         }
     }
 
@@ -65,12 +67,24 @@ struct RootView: View {
             PlaylistChannelView(playlist: playlist, onBack: AppNavigator.back)
         case .playlistFavorites:
             PlaylistFavoriteView(onBack: AppNavigator.back)
+        case let .playlistList(section):
+            PlaylistListView(section: section, onBack: AppNavigator.back)
+        case let .importPlaylist(tab):
+            ImportPlaylistView(tab: tab, onBack: AppNavigator.back)
+        case .importXtream:
+            ImportXtreamView(onBack: AppNavigator.back)
         case let .playlistPlayer(playlist, channel):
             PlaylistPlayerView(playlist: playlist, channel: channel, onBack: AppNavigator.back)
+        case let .playlistGroup(playlist, channel):
+            PlaylistGroupView(playlist: playlist, channel: channel, onBack: AppNavigator.back)
+        case let .playVideo(playlist):
+            PlayVideoView(playlist: playlist, onBack: AppNavigator.back)
+        case let .watchRoom(code):
+            WatchRoomView(code: code, onBack: AppNavigator.back)
         case let .xtreamFavorites(playlist):
             XtreamFavoriteView(playlist: playlist, onBack: AppNavigator.back)
-        case let .xtreamDetail(channel, related, playlistID):
-            XtreamDetailView(channel: channel, related: related.channels, playlistID: playlistID, onBack: AppNavigator.back)
+        case let .xtreamDetail(channel, related, _):
+            PlayVideoView(playlist: .xtreamPlayback(of: channel, in: related.channels), onBack: AppNavigator.back)
         }
     }
 
@@ -82,7 +96,6 @@ struct RootView: View {
         case .paywall:
             PaywallView { isPurchased in
                 AppNavigator.back()
-                // Tell the watch-limit logic once the paywall is gone.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     PaywallCenter.shared.finish(isPurchased: isPurchased)
                 }

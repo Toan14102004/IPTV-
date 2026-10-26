@@ -1,14 +1,11 @@
 //
-//  AppDebug.xcconfig
+//  AppRelease.xcconfig
 //  I340_IPTV
 //
-//  Created by Nguyen Dao Hung on 9/6/26.
+//  Giá trị THẬT của bản Release. `__SET_ME__` = còn thiếu, phải xin PM.
+//  Build phase "Release Preflight" chặn build Release khi còn __SET_ME__ hoặc giá trị test.
+//  ID test của bản Debug nằm ở AppDebug.xcconfig — không copy ngược sang đây.
 //
-
-//  MARK: -- CHÚ Ý
-//  AppName, BundleVersion BundleVersionString, ADSAppID(Admob app id)
-//  Những thông tin này chỉnh sửa ở đây, không cần chỉnh sửa trong file Info.plist
-//  Đổi thông tin url như privacy, term of use, nếu chưa hiểu thì liên hệ dev
 
 //Define
 //PROTOCOL_HTTP if url start with https:/
@@ -20,81 +17,78 @@ PROTOCOL_HTTPS = https:/
 SearchAdsTrackingDomain    = $(PROTOCOL_HTTPS)/appletracking.fuentechsoft.com/
 
 //AppInfo
-ApplicationID               = id0000000000
-EmailDeveloper              = your-email@example.com
+ApplicationID               = __SET_ME__
+EmailDeveloper              = __SET_ME__
 EnableShowReviewDialog      = YES
-AppGroupID                  = group.com.I340_IPTV
-PrivacyPolicyUrl            = $(PROTOCOL_HTTPS)/fuentechsoft.com/privacy/
-TermOfUseUrl                = $(PROTOCOL_HTTPS)/fuentechsoft.com/terms/
-RefundUrl                   = $(PROTOCOL_HTTPS)/fuentechsoft.com/refund/
+AppGroupID                  = __SET_ME__
+PrivacyPolicyUrl            = __SET_ME__
+TermOfUseUrl                = __SET_ME__
+RefundUrl                   = __SET_ME__
 
 //META
-FacebookAppID               = 3372650752904711
-FacebookClientToken         = f2a81bafcc0931629fc800d37c79c97a
-FBAPPID                     = fb3372650752904711
+FacebookAppID               = __SET_ME__
+FacebookClientToken         = __SET_ME__
+FBAPPID                     = __SET_ME__
 
 // TikTok
-TikTokAppID                = 7664881116578398228
-TikTokAccessToken          = TTmi1YHU5JtO14ezFNmDzLH5JoDkgBzm
+TikTokAppID                = __SET_ME__
+TikTokAccessToken          = __SET_ME__
 
-//Advertisement - TEST ADS IDs (Debug)
+//Advertisement - PRODUCTION ad unit IDs
 EnableShowAds               = YES
-ADSAppID                    = ca-app-pub-3940256099942544~1458002511
+ADSAppID                    = __SET_ME__
 
-ADSInterstitialAdsID           = ca-app-pub-3940256099942544/4411468910
+ADSInterstitialAdsID           = __SET_ME__
 
-ADSNativeAdsMediaViewID        = ca-app-pub-3940256099942544/3986624511
-ADSNativeAdsNoMediaViewID      = ca-app-pub-3940256099942544/3986624511
+ADSNativeAdsMediaViewID        = __SET_ME__
+ADSNativeAdsNoMediaViewID      = __SET_ME__
 
-ADSNativeLanguageAdsID         = ca-app-pub-3940256099942544/3986624511
-ADSNativeLanguageAds2FID       = ca-app-pub-3940256099942544/3986624511
-ADSNativeLanguageAdsMFID       = ca-app-pub-3940256099942544/3986624511
+ADSNativeLanguageAdsID         = __SET_ME__
+ADSNativeLanguageAds2FID       = __SET_ME__
+ADSNativeLanguageAdsMFID       = __SET_ME__
 
-ADSNativeIntroFirstID            = ca-app-pub-3940256099942544/3986624511
-ADSNativeIntroFirst2FID          = ca-app-pub-3940256099942544/3986624511
-ADSNativeIntroFirstMFID          = ca-app-pub-3940256099942544/3986624511
+ADSNativeIntroFirstID            = __SET_ME__
+ADSNativeIntroFirst2FID          = __SET_ME__
+ADSNativeIntroFirstMFID          = __SET_ME__
 
-ADSNativeIntroThirdID            = ca-app-pub-3940256099942544/3986624511
-ADSNativeIntroThird2FID          = ca-app-pub-3940256099942544/3986624511
-ADSNativeIntroThirdMFID          = ca-app-pub-3940256099942544/3986624511
+ADSNativeIntroThirdID            = __SET_ME__
+ADSNativeIntroThird2FID          = __SET_ME__
+ADSNativeIntroThirdMFID          = __SET_ME__
 
-ADSNativeFullScreenID    = ca-app-pub-3940256099942544/3986624511
-ADSNativeFullScreen2FID  = ca-app-pub-3940256099942544/3986624511
-ADSNativeFullScreenMFID  = ca-app-pub-3940256099942544/3986624511
+ADSNativeFullScreenID    = __SET_ME__
+ADSNativeFullScreen2FID  = __SET_ME__
+ADSNativeFullScreenMFID  = __SET_ME__
 
-ADSAppOpenAdsID                = ca-app-pub-3940256099942544/5575463023
+ADSAppOpenAdsID                = __SET_ME__
 
-ADSInterstitialOpenAppID       = ca-app-pub-3940256099942544/4411468910
-ADSInterstitialOpenApp2FID     = ca-app-pub-3940256099942544/4411468910
-ADSInterstitialOpenAppMFID     = ca-app-pub-3940256099942544/4411468910
+ADSInterstitialOpenAppID       = __SET_ME__
+ADSInterstitialOpenApp2FID     = __SET_ME__
+ADSInterstitialOpenAppMFID     = __SET_ME__
 
-ADSInterstitialBackgroundID    = ca-app-pub-3940256099942544/4411468910
+ADSInterstitialBackgroundID    = __SET_ME__
 
-ADSBannerID                    = ca-app-pub-3940256099942544/2934735716
+ADSBannerID                    = __SET_ME__
 
-ADSRewardedVideoAdsID          = ca-app-pub-3940256099942544/1712485313
-ADSRewardedVideoAds2FID        = ca-app-pub-3940256099942544/1712485313
-ADSRewardedVideoAdsMFID        = ca-app-pub-3940256099942544/1712485313
+ADSRewardedVideoAdsID          = __SET_ME__
+ADSRewardedVideoAds2FID        = __SET_ME__
+ADSRewardedVideoAdsMFID        = __SET_ME__
 
-//InAppPurcharse - TEST IDs
+//InAppPurcharse - PRODUCTION product IDs
 EnableShowInApp             = YES
 EnableShowInAppWhenOpenApp  = YES
-IAPSubcriptionSecret        =
-OneTime                     = com.test.new.onetime
-IAPWeekly                   = com.test.new.weekly
-IAPYearly                   = com.test.new.yearly
-IAPMonthly                  = com.test.new.monthly
-IAPYearlySaleOff            = com.test.new.yearlysaleoff
-IAPMiniPackage              = com.test.new.mini
-InfoPremium0                = Remove All Ads
-InfoPremium1                = Unlimited Features
-InfoPremium2                = Premium Support
+IAPSubcriptionSecret        = __SET_ME__
+OneTime                     = __SET_ME__
+IAPWeekly                   = __SET_ME__
+IAPYearly                   = __SET_ME__
+IAPMonthly                  = __SET_ME__
+IAPYearlySaleOff            = __SET_ME__
+IAPMiniPackage              = __SET_ME__
+InfoPremium0                = Remove all ads
+InfoPremium1                = Unlimited playlists and streams
+InfoPremium2                = Unlimited watch time, no 10-minute limit
 IAPMessage                  = Payment will be charged to iTunes Account at confirmation of purchase. Subscription automatically renews unless auto-renew is turned off at least 24-hours before the end of current period. Account will be charged for renewal within 24-hours prior to the end of current period after confirmation of purchase. Subscription may be managed by the user and auto-renewal may be turned off by going to the user Account Settings after purchase. Any unused portion of free trial period, if offered, will be forfeited when the user purchases a subscription to that publication, where applicable.
 
 //LocalNotification
 EnableLocalNotification     = YES
 TimeTriggerNotification     = 86400
 ContentTriggerDescription   = Upgrade your account to Premium so you can use all functions today.
-
-//AppsFlyer
-AppsFlyerDevKey             = your_appsflyer_dev_key

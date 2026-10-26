@@ -18,9 +18,7 @@ final class UserDefaultManager {
         case currentCoin
         case isTheFirstTimeInstall
         case haveUpdatedComment
-        case email, password, userId
         case HourToPushLocalNoti
-        case enableCheat
         case isRated
         case timeRecord
         case timeDetect
@@ -31,10 +29,11 @@ final class UserDefaultManager {
         case petName
         case petGender
         case petAge
-        case petBreed
         case petGoals
         case isShowNativeFull
         case countChatWithAI
+        case hasSeenGetStarted
+        case favoritePlaylistIDs
         case watchLimitWatchedDuration = "watch_limit_watched_duration"
     }
 
@@ -90,26 +89,17 @@ final class UserDefaultManager {
         set { updateDefaults(for: UserDefaultManagerKey.numberOfLaunches.rawValue, value: newValue) }
     }
 
-    var email: String {
-        get { return value(for: UserDefaultManagerKey.email.rawValue) ?? "" }
-        set { updateDefaults(for: UserDefaultManagerKey.email.rawValue, value: newValue) }
+    var hasSeenGetStarted: Bool {
+        get { return value(for: UserDefaultManagerKey.hasSeenGetStarted.rawValue) ?? false }
+        set { updateDefaults(for: UserDefaultManagerKey.hasSeenGetStarted.rawValue, value: newValue) }
     }
 
-    var password: String {
-        get { return value(for: UserDefaultManagerKey.password.rawValue) ?? "" }
-        set { updateDefaults(for: UserDefaultManagerKey.password.rawValue, value: newValue) }
+    /// Playlists marked with the heart on the Playlist screen.
+    var favoritePlaylistIDs: [String] {
+        get { return value(for: UserDefaultManagerKey.favoritePlaylistIDs.rawValue) ?? [] }
+        set { updateDefaults(for: UserDefaultManagerKey.favoritePlaylistIDs.rawValue, value: newValue) }
     }
 
-    var userId: String {
-        get { return value(for: UserDefaultManagerKey.userId.rawValue) ?? "" }
-        set { updateDefaults(for: UserDefaultManagerKey.userId.rawValue, value: newValue) }
-    }
-    
-    var enableCheat: Bool {
-        get { return value(for: UserDefaultManagerKey.enableCheat.rawValue) ?? false}
-        set {updateDefaults(for: UserDefaultManagerKey.enableCheat.rawValue, value: newValue)}
-    }
-    
     var isRated: Bool {
         get {return value(for: UserDefaultManagerKey.isRated.rawValue) ?? false}
         set { updateDefaults(for: UserDefaultManagerKey.isRated.rawValue, value: newValue)}
@@ -160,10 +150,6 @@ final class UserDefaultManager {
         get { return value(for: UserDefaultManagerKey.petAge.rawValue) ?? "" }
     }
     
-    var petBreed: String {
-        set { updateDefaults(for: UserDefaultManagerKey.petBreed.rawValue, value: newValue) }
-        get { return value(for: UserDefaultManagerKey.petBreed.rawValue) ?? "Unknown" }
-    }
     
     var petGoals: [String] {
         set { updateDefaults(for: UserDefaultManagerKey.petGoals.rawValue, value: newValue) }

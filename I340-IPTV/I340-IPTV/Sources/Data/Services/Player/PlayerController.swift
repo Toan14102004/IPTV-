@@ -30,6 +30,8 @@ final class PlayerController: NSObject, ObservableObject {
     /// "m:ss" of the position and of the time left; "--:--" for live streams.
     @Published private(set) var elapsedText = "--:--"
     @Published private(set) var remainingText = "--:--"
+    /// The current item has no finite duration — a live stream rather than VOD.
+    @Published private(set) var isLive = false
     @Published private(set) var isMuted = false
     @Published private(set) var volume: Float = 1
     @Published private(set) var brightness: CGFloat = UIScreen.main.brightness
@@ -50,6 +52,10 @@ final class PlayerController: NSObject, ObservableObject {
     var onPlaybackStopped: (() -> Void)?
     /// The stream with this id could not be played (bad URL, error or timeout).
     var onLoadFailed: ((String) -> Void)?
+    /// The user played / paused or seeked; the position is in seconds (drives a watch-together room).
+    var onUserPlay: ((Double) -> Void)?
+    var onUserPause: ((Double) -> Void)?
+    var onUserSeek: ((Double) -> Void)?
 
     /// Only react to connectivity changes while the screen is on screen.
     var isActive = false
@@ -62,6 +68,9 @@ final class PlayerController: NSObject, ObservableObject {
     private var currentRequest: (url: URL?, id: String)?
     private var loadingID: String?
     private var shouldReconnectWhenNetworkRestores = false
+    /// Last valid playback position of the current request, so a reload (network drop, paywall
+    /// dismiss) resumes where it left off instead of restarting from zero.
+    private var lastKnownPosition: Double = 0
     private var statusObservation: NSKeyValueObservation?
     private var keepUpObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
@@ -75,6 +84,7 @@ final class PlayerController: NSObject, ObservableObject {
 
     override init() {
         super.init()
+        configureAudioSession()
         observeSystemVolume()
         observeNetwork()
     }
@@ -89,16 +99,17 @@ final class PlayerController: NSObject, ObservableObject {
     // MARK: - Loading
 
     /// Starts playing `url`; `id` identifies the request so stale callbacks are ignored.
-    func load(url: URL?, id: String) {
+    func load(url: URL?, id: String, startAt: Double = 0, autoplay: Bool = true) {
         cleanup()
         currentRequest = (url, id)
+        lastKnownPosition = startAt
         showsPreview = true
 
         guard let url else {
             failLoad(id: id)
             return
         }
-        guard NetworkOverlayManager.shared.isConnected else {
+        guard url.isFileURL || NetworkOverlayManager.shared.isConnected else {
             shouldReconnectWhenNetworkRestores = true
             showNetworkLost()
             return
@@ -116,10 +127,15 @@ final class PlayerController: NSObject, ObservableObject {
         player.volume = 1
         player.isMuted = isMuted
         self.player = player
+        if startAt > 0 {
+            player.seek(to: CMTime(seconds: startAt, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        }
 
         observe(player, item: item, id: id)
         addPeriodicTimeObserver(to: player)
-        player.rate = playbackRate
+        if autoplay {
+            player.rate = playbackRate
+        }
     }
 
     /// Stops playback and returns to the idle state (leaving the screen, paywall …).
@@ -144,10 +160,12 @@ final class PlayerController: NSObject, ObservableObject {
         showsPreview = true
     }
 
-    /// Plays the current request again (after the paywall or a network drop).
+    /// Plays the current request again (after the paywall or a network drop), resuming from the
+    /// last known position instead of restarting from zero. A live channel has no fixed timeline
+    /// to seek back into across a fresh connection, so it just rejoins at the live edge.
     func reload() {
         guard let request = currentRequest else { return }
-        load(url: request.url, id: request.id)
+        load(url: request.url, id: request.id, startAt: isLive ? 0 : lastKnownPosition)
     }
 
     // MARK: - Playback controls
@@ -158,11 +176,36 @@ final class PlayerController: NSObject, ObservableObject {
             player.pause()
             isPlaying = false
             showControls(autoHide: false)
+            onUserPause?(currentSeconds)
         } else {
             player.rate = playbackRate
             isPlaying = true
             showControls(autoHide: true)
+            onUserPlay?(currentSeconds)
         }
+    }
+
+    /// Wall-clock date of the playing HLS frame (needs EXT-X-PROGRAM-DATE-TIME), nil otherwise.
+    var currentDate: Date? { player?.currentItem?.currentDate() }
+
+    /// Current position in seconds (0 before the stream starts).
+    var currentSeconds: Double {
+        guard let seconds = player?.currentTime().seconds, seconds.isFinite else { return 0 }
+        return max(seconds, 0)
+    }
+
+    /// Applies a position and play state that came from a watch-together room.
+    func apply(position: Double, isPlaying shouldPlay: Bool) {
+        guard let player else { return }
+        if abs(currentSeconds - position) > 1 {
+            player.seek(to: CMTime(seconds: position, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        }
+        if shouldPlay {
+            player.rate = playbackRate
+        } else {
+            player.pause()
+        }
+        isPlaying = shouldPlay
     }
 
     /// Resumes a paused stream (after a purchase).
@@ -184,6 +227,7 @@ final class PlayerController: NSObject, ObservableObject {
         }
         player.seek(to: CMTime(seconds: target, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
         showControls(autoHide: isPlaying)
+        onUserSeek?(target)
     }
 
     func seek(toFraction fraction: Double) {
@@ -194,6 +238,7 @@ final class PlayerController: NSObject, ObservableObject {
         let target = CMTime(seconds: duration * max(0, min(fraction, 1)), preferredTimescale: 600)
         player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero)
         showControls(autoHide: isPlaying)
+        onUserSeek?(target.seconds)
     }
 
     func setPlaybackRate(_ rate: Float) {
@@ -351,18 +396,24 @@ final class PlayerController: NSObject, ObservableObject {
             progress = 0
             elapsedText = "--:--"
             remainingText = "--:--"
+            isLive = false
             return
         }
         let current = player.currentTime().seconds
         let duration = player.currentItem?.duration.seconds ?? 0
         elapsedText = Self.timeText(current)
+        if current.isFinite, current >= 0 { lastKnownPosition = current }
         guard current.isFinite, duration.isFinite, duration > 0 else {
             progress = 0
             remainingText = "--:--"
+            // Still loading, a VOD item's duration briefly reads the same as a live one's
+            // (not yet known); only call it live once the item has actually confirmed so.
+            isLive = phase == .ready
             return
         }
         progress = max(0, min(current / duration, 1))
         remainingText = Self.timeText(max(duration - current, 0))
+        isLive = false
     }
 
     private static func timeText(_ seconds: Double) -> String {
@@ -380,6 +431,17 @@ final class PlayerController: NSObject, ObservableObject {
             failLoad(id: id)
         default:
             break
+        }
+    }
+
+    /// Without `.playback` the stream is silenced by the ring/silent switch and stops on lock.
+    /// `.moviePlayback` is the mode AVPlayer-based video uses.
+    private func configureAudioSession() {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(.playback, mode: .moviePlayback)
+        } catch {
+            print("[Player] Audio session category failed: \(error)")
         }
     }
 

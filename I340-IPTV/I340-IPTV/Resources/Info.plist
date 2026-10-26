@@ -74,11 +74,6 @@
 			<key>TermOfUseUrl</key>
 			<string>$(TermOfUseUrl)</string>
 		</dict>
-		<key>AppsFlyer</key>
-		<dict>
-			<key>AppsFlyerDevKey</key>
-			<string>$(AppsFlyerDevKey)</string>
-		</dict>
 		<key>InAppPurchase</key>
 		<dict>
 			<key>EnableShowInApp</key>
@@ -172,17 +167,15 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSAllowsArbitraryLoadsForMedia</key>
+		<true/>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>This application require camera to capture image to take a dog picture then detect it</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs microphone access to record your audio and provide real-time translation between humans and dogs</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app requires this permission to save dog photo to your library.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>SKAdNetworkItems</key>

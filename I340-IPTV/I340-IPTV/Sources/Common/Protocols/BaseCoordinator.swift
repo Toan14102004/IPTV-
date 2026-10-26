@@ -25,5 +25,3 @@ protocol BaseCoordinator {
     associatedtype FullScreen: BaseFullScreen = DefaultFullScreen
     associatedtype Navigation: BaseNavigation = DefaultNavigation
 }
-
-struct DefaultCoordinator: BaseCoordinator {}

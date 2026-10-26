@@ -100,18 +100,6 @@ struct RemoteKonfig {
     
     // MARK: - Other Configs
 
-    @RemoteKonfigProperty(key: "App_Time_Translator", default: "")
-    var TimeTranslator: String
-
-    @RemoteKonfigProperty(key: "App_Time_Scanner", default: "")
-    var TimeDetect: String
-
-    @RemoteKonfigProperty(key: "gemini_ai_model", default: "gemini-2.5-flash")
-    var geminiAIModel: String
-
-    @RemoteKonfigProperty(key: "gemini_ai_key", default: "your_gemini_api_key")
-    var geminiAIKey: String
-
     @RemoteKonfigProperty(key: "i340_navigate_reinstalling", default: "")
     var navigateReinstall: String
 }

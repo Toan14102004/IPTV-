@@ -111,17 +111,15 @@ extension SplashView {
                     self?.hasGatherConsent = true
                     onCompleted()
                 },
-                isHighFloor: true // Configure based on remote config if needed
+                isHighFloor: true
             )
         }
 
         private func preloadAds() {
-            // Native ads for the language screen
             AdsManager.shared.preloadNativeAd(.ADSNativeLanguageAds2FID, autoReload: true)
             AdsManager.shared.preloadNativeAd(.ADSNativeLanguageAdsMFID)
             AdsManager.shared.preloadNativeAd(.ADSNativeLanguageAdsID)
 
-            // Native ads for the intro screens
             AdsManager.shared.preloadNativeAd(.ADSNativeIntroFirst2FID)
             AdsManager.shared.preloadNativeAd(.ADSNativeIntroFirstMFID)
             AdsManager.shared.preloadNativeAd(.ADSNativeIntroFirstID)
@@ -176,7 +174,6 @@ extension SplashView {
         private func tick(_ timer: Timer) {
             secondsRemaining -= 1
 
-            // Subscribed users skip the wait.
             if IAPHelper.shared().isSubscribed() {
                 if secondsRemaining == 9 {
                     progress = 1
@@ -188,7 +185,6 @@ extension SplashView {
                 return
             }
 
-            // Progress follows the elapsed time.
             let elapsed = delayTimeSplash - TimeInterval(secondsRemaining)
             progress = max(0, min(1, elapsed / delayTimeSplash))
 
@@ -203,7 +199,6 @@ extension SplashView {
                 return
             }
 
-            // 2F open ad first.
             if AdsManager.shared.openInterstitialAd2FUtils.isAdAvailable() {
                 stopTimer(timer)
                 showOpenInterstitialHighAd(
@@ -221,7 +216,6 @@ extension SplashView {
                 return
             }
 
-            // Then the MF open ad.
             if secondsRemaining <= 2 && AdsManager.shared.openInterstitialAdMFUtils.isAdAvailable() {
                 stopTimer(timer)
                 showOpenInterstitialHighDupAd(
@@ -239,7 +233,6 @@ extension SplashView {
                 return
             }
 
-            // Time is up.
             if secondsRemaining <= 0 {
                 stopTimer(timer)
 
@@ -289,7 +282,12 @@ extension SplashView {
         }
 
         private func openNextFlow() {
-            appState[\.route] = isFromLanguageSetting ? .main : .language
+            if isFromLanguageSetting {
+                appState[\.route] = .content
+            } else {
+                // Get Started is shown once, on the first launch.
+                appState[\.route] = UserDefaultManager.shared().hasSeenGetStarted ? .language : .getStarted
+            }
         }
     }
 }

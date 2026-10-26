@@ -67,8 +67,12 @@ final class M3UPlaylistParser: M3UPlaylistParsing {
     private func extractDuration(from line: String) -> Int {
         guard let durationRange = line.range(of: "#EXTINF:") else { return -1 }
         let afterPrefix = line[durationRange.upperBound...]
-        guard let commaIndex = afterPrefix.firstIndex(of: ",") else { return -1 }
-        return Int(afterPrefix[..<commaIndex].trimmingCharacters(in: .whitespaces)) ?? -1
+        // "#EXTINF:596,Title" or "#EXTINF:596 tvg-logo=\"…\",Title": the number comes first.
+        let token = afterPrefix
+            .trimmingCharacters(in: .whitespaces)
+            .prefix { !$0.isWhitespace && $0 != "," }
+        guard let seconds = Double(token), seconds.isFinite else { return -1 }
+        return seconds > 0 ? Int(seconds.rounded()) : -1
     }
     
     private func extractTitle(from line: String) -> String {

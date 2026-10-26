@@ -8,30 +8,32 @@ import SwiftUI
 struct SettingsView: View {
     @StateObject private var viewModel: ViewModel
 
-    init(onBack: @escaping () -> Void) {
+    /// `onBack` is nil for the Settings tab, which shows no back button.
+    init(onBack: (() -> Void)?) {
         _viewModel = StateObject(wrappedValue: ViewModel(onBack: onBack))
     }
 
     var body: some View {
-        BaseView(background: Asset.Color.screenBackground.color) {
+        BaseView(background: Color.white) {
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    header
+                ScreenHeader(title: viewModel.screenTitle, onBack: viewModel.backAction)
 
-                    if !viewModel.isSubscribed {
-                        premiumBanner
-                            .padding(.top, Layout.Spacing.s)
+                ScrollView {
+                    VStack(spacing: Layout.Spacing.m) {
+                        NativeAdBannerView(config: .init(adIdNormal: .ADSNativeAdsMediaViewID), height: 200) {
+                            MediumNativeAdView(frame: .zero)
+                        }
+
+                        VStack(spacing: Layout.Spacing.m) {
+                            if !viewModel.isSubscribed {
+                                premiumBanner
+                            }
+
+                            optionsCard
+                        }
+                        .padding(.horizontal, Layout.Spacing.m)
                     }
-
-                    optionsCard
-                        .padding(.top, Layout.Spacing.l)
-                }
-                .padding(.horizontal, Layout.Spacing.m)
-
-                Spacer(minLength: 0)
-
-                NativeAdBannerView(config: .init(adIdNormal: .ADSNativeAdsMediaViewID), height: 262) {
-                    LargeNativeAdViewOnboard(frame: .zero)
+                    .padding(.bottom, Layout.Spacing.m)
                 }
             }
         }
@@ -57,63 +59,47 @@ struct SettingsView: View {
 // MARK: - Subviews
 
 private extension SettingsView {
-    var header: some View {
-        HStack(spacing: Layout.Spacing.xs) {
-            BackButton(action: viewModel.didTapBack)
-                .frame(width: 24, height: 24)
-
-            Text(viewModel.screenTitle)
-                .font(FontFamily.Poppins.medium.font(size: 24))
-                .foregroundColor(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-                .padding(.leading, Layout.Spacing.s)
-
-            Spacer(minLength: 0)
-        }
-        .padding(.top, Layout.Spacing.sm)
-    }
-
     var premiumBanner: some View {
         Button(action: viewModel.didTapPremium) {
-            ZStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.Spacing.sm) {
+                VStack(alignment: .leading, spacing: Layout.Spacing.xs) {
+                    HStack(spacing: Layout.Spacing.xs) {
+                        Text(viewModel.premiumTitle)
+                            .font(FontFamily.Poppins.bold.font(size: 20))
+                        Asset.Icon.icCrown.image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                    }
+                    Text(viewModel.premiumMessage)
+                        .font(Typography.bodySmall)
+                }
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+
+                HStack(spacing: Layout.Spacing.xs) {
+                    Text(viewModel.upgradeTitle)
+                        .font(Typography.labelMedium)
+                    Asset.Icon.icArrowRight.image
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                }
+                .padding(.horizontal, Layout.Spacing.sm)
+                .padding(.vertical, Layout.Spacing.xs)
+                .background(LinearGradient.primaryLinear, in: Capsule())
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: 200, alignment: .leading)
+            .padding(.horizontal, Layout.Spacing.m)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(height: 130)
+            .background(
                 Asset.Image.imgSettingsPremiumBanner.image
                     .resizable()
                     .scaledToFill()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .clipped()
-
-                VStack(alignment: .leading, spacing: Layout.Spacing.xxs) {
-                    (
-                        Text(viewModel.upgradePrefix).foregroundColor(.white)
-                            + Text(viewModel.upgradePremium).foregroundColor(.brand)
-                    )
-                    .font(FontFamily.Poppins.bold.font(size: 18))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-
-                    Text(viewModel.upgradeMessage)
-                        .font(FontFamily.Poppins.regular.font(size: 12))
-                        .foregroundColor(Asset.Color.textLight.color)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(width: 204, alignment: .leading)
-                .padding(.leading, Layout.Spacing.m)
-
-                HStack {
-                    Spacer()
-                    Asset.Icon.icSettingsPremiumArrow.image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 17, height: 17)
-                        .padding(.trailing, Layout.Spacing.m)
-                }
-            }
-            .frame(height: 96)
-            .background(Asset.Color.cardBackground.color)
+            )
             .clipShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.large))
-            .overlay(RoundedRectangle(cornerRadius: Layout.CornerRadius.large).stroke(Asset.Color.cardBorder.color, lineWidth: 1))
             .contentShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.large))
         }
         .buttonStyle(.plain)
@@ -122,15 +108,18 @@ private extension SettingsView {
     var optionsCard: some View {
         VStack(spacing: 0) {
             ForEach(viewModel.options) { option in
-                SettingRow(icon: option.icon, tint: option.iconTint, title: viewModel.title(for: option)) {
+                SettingRow(
+                    icon: option.icon,
+                    tint: option.tint,
+                    title: viewModel.title(for: option),
+                    showsDivider: option != viewModel.options.last
+                ) {
                     viewModel.didSelect(option)
                 }
             }
         }
-        .padding(Layout.Spacing.sm)
-        .background(Asset.Color.cardBackground.color)
-        .clipShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.large))
-        .overlay(RoundedRectangle(cornerRadius: Layout.CornerRadius.large).stroke(Asset.Color.cardBorder.color, lineWidth: 1))
+        .padding(.horizontal, Layout.Spacing.m)
+        .background(Color.background1, in: RoundedRectangle(cornerRadius: Layout.CornerRadius.large))
     }
 }
 
@@ -138,37 +127,42 @@ private extension SettingsView {
 
 private struct SettingRow: View {
     let icon: ImageAsset
-    var tint: Color?
+    let tint: Color
     let title: String
+    var showsDivider = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: Layout.Spacing.sm) {
-                Group {
-                    if let tint {
-                        icon.image.renderingMode(.template).resizable().foregroundColor(tint)
-                    } else {
-                        icon.image.resizable()
-                    }
-                }
-                .scaledToFit()
-                .frame(width: 24, height: 24)
+            HStack(spacing: Layout.Spacing.s) {
+                icon.image
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundStyle(.white)
+                    .frame(width: 20, height: 20)
+                    .frame(width: 28, height: 28)
+                    .background(tint, in: RoundedRectangle(cornerRadius: 4))
 
                 Text(title)
-                    .font(FontFamily.Poppins.regular.font(size: 16))
-                    .foregroundColor(.white)
+                    .font(Typography.bodyMedium)
+                    .foregroundStyle(Color.text1)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 Asset.Icon.icSettingsChevron.image
+                    .renderingMode(.template)
                     .resizable()
-                    .scaledToFit()
+                    .foregroundStyle(Color.text3)
                     .frame(width: 24, height: 24)
             }
-            .padding(.horizontal, Layout.Spacing.sm)
-            .frame(height: 48)
+            .padding(.vertical, Layout.Spacing.m)
+            .frame(minHeight: 60)
+            .overlay(alignment: .bottom) {
+                if showsDivider {
+                    Color.neutral1.frame(height: 1)
+                }
+            }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

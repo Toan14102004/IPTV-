@@ -51,7 +51,9 @@ struct PlayVideoControlsOverlay: View {
                     bottomBar
                 }
 
-                if !isReadOnly {
+                // Hidden while busy or stalled: waiting for data reads as "paused" to the player,
+                // and a play button over the spinner makes a buffer gap look like a failure.
+                if !isReadOnly, !isBusy, !controller.isStalled {
                     centerControls
                 }
             }
@@ -63,7 +65,7 @@ struct PlayVideoControlsOverlay: View {
                     .allowsHitTesting(false)
             }
 
-            if controller.phase == .loading || isBusy {
+            if controller.phase == .loading || isBusy || controller.isStalled {
                 VStack(spacing: Layout.Spacing.s) {
                     ProgressView().tint(.white)
                     Text(loadingText)
@@ -133,10 +135,13 @@ private extension PlayVideoControlsOverlay {
 
     var centerControls: some View {
         HStack(spacing: 12) {
-            Button { skip(-15) } label: {
-                icon(Asset.Icon.icPlayerRewind15, size: 19)
-                    .frame(width: 37.5, height: 37.5)
-                    .background(Color.black.opacity(0.25), in: Circle())
+            // A live channel has no fixed timeline to skip within; seeking on one just forces a reload.
+            if !isLive {
+                Button { skip(-15) } label: {
+                    icon(Asset.Icon.icPlayerRewind15, size: 19)
+                        .frame(width: 37.5, height: 37.5)
+                        .background(Color.black.opacity(0.25), in: Circle())
+                }
             }
             Button(action: controller.togglePlayback) {
                 Group {
@@ -149,10 +154,12 @@ private extension PlayVideoControlsOverlay {
                 .frame(width: 56, height: 56)
                 .background(Color.black.opacity(0.25), in: Circle())
             }
-            Button { skip(15) } label: {
-                icon(Asset.Icon.icPlayerForward15, size: 19)
-                    .frame(width: 37.5, height: 37.5)
-                    .background(Color.black.opacity(0.25), in: Circle())
+            if !isLive {
+                Button { skip(15) } label: {
+                    icon(Asset.Icon.icPlayerForward15, size: 19)
+                        .frame(width: 37.5, height: 37.5)
+                        .background(Color.black.opacity(0.25), in: Circle())
+                }
             }
         }
         .buttonStyle(.plain)
@@ -177,7 +184,12 @@ private extension PlayVideoControlsOverlay {
                 if !isReadOnly {
                     Button(action: controller.togglePlayback) {
                         smallCircle {
-                            icon(controller.isPlaying ? Asset.Icon.icPlayerSmallToggle : Asset.Icon.icPlayerPlay, size: 14)
+                            icon(
+                                controller.isPlaying || controller.isStalled
+                                    ? Asset.Icon.icPlayerSmallToggle
+                                    : Asset.Icon.icPlayerPlay,
+                                size: 14
+                            )
                         }
                     }
                 }

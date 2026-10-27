@@ -372,8 +372,7 @@ final class IPTVPlaylistManager {
             url: streamURL,
             groupTitle: "Stream"
         )
-        // A live stream never resolves a duration in time and stays -1 ("--:--"); a VOD-style
-        // direct link does, same as a device file.
+        // A live stream times out and stays -1 ("--:--"); a VOD link resolves, like a device file.
         if let url = URL(string: streamURL) {
             channel.duration = await Self.duration(of: url)
         }

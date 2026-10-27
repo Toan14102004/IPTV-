@@ -53,6 +53,8 @@ extension PlayVideoView {
         @Published private(set) var snapshot: RoomSnapshot?
         /// The host lost the network and is getting the room (and the picture) back.
         @Published private(set) var isReconnecting = false
+        /// Swapping to a new relay generation mid-playback: a short reload, not a pause.
+        @Published private(set) var isSwitchingStream = false
         @Published private(set) var banner: Banner?
         @Published private(set) var isCodeCopied = false
         @Published var sheet: Sheet?
@@ -76,8 +78,6 @@ extension PlayVideoView {
         private var offlineCancellable: AnyCancellable?
         private var hasStarted = false
         private var leavesScreen = false
-        /// The server told us who joins; until then the count of viewers is all there is.
-        private var usesParticipantEvents = false
         private var loadedStream: RoomStream?
         private var loadedGeneration: Int?
         private var streamTask: Task<Void, Never>?
@@ -408,17 +408,24 @@ extension PlayVideoView {
                 return
             }
 
-            if relayState == .ready {
-                syncPlayback(to: snapshot)
-            }
-
-            if snapshot.participants != nil { usesParticipantEvents = true }
-            if !usesParticipantEvents, let previous, previous.viewerCount != snapshot.viewerCount {
-                let someone = "watch_together_someone".localized(fallback: "Someone")
-                if snapshot.viewerCount > previous.viewerCount {
-                    showBanner(.joined, text: Self.joinedText(someone), avatar: RoomAvatar.at(snapshot.viewerCount))
-                } else {
-                    showBanner(.left, text: Self.leftText(someone), avatar: RoomAvatar.at(previous.viewerCount))
+            // Diff participants for a named banner; fall back to a generic one from the viewer
+            // count only if a snapshot ever lacks the list.
+            if let previous {
+                if let previousList = previous.participants, let currentList = snapshot.participants {
+                    let previousIDs = Set(previousList.map(\.id))
+                    let currentIDs = Set(currentList.map(\.id))
+                    if let joined = currentList.first(where: { !previousIDs.contains($0.id) }) {
+                        showBanner(.joined, text: Self.joinedText(joined.name), avatar: RoomAvatar(key: joined.avatar))
+                    } else if let left = previousList.first(where: { !currentIDs.contains($0.id) }) {
+                        showBanner(.left, text: Self.leftText(left.name), avatar: RoomAvatar(key: left.avatar))
+                    }
+                } else if previous.viewerCount != snapshot.viewerCount {
+                    let someone = "watch_together_someone".localized(fallback: "Someone")
+                    if snapshot.viewerCount > previous.viewerCount {
+                        showBanner(.joined, text: Self.joinedText(someone), avatar: RoomAvatar.at(snapshot.viewerCount))
+                    } else {
+                        showBanner(.left, text: Self.leftText(someone), avatar: RoomAvatar.at(previous.viewerCount))
+                    }
                 }
             }
         }
@@ -473,7 +480,6 @@ extension PlayVideoView {
 
         private func handleParticipant(_ event: RoomParticipantEvent) {
             guard event.code == snapshot?.code else { return }
-            usesParticipantEvents = true
             let avatar = RoomAvatar(key: event.participant.avatar)
             switch event.type {
             case .joined: showBanner(.joined, text: Self.joinedText(event.participant.name), avatar: avatar)
@@ -487,7 +493,9 @@ extension PlayVideoView {
             case .starting:
                 relayState = .preparing
             case .ready, .paused:
-                loadStream(generation: event.generation, autoplay: event.status == .ready)
+                // The relay reports itself paused while it swaps generations; the host decides
+                // whether playback runs, so keep playing if that is what it was already doing.
+                loadStream(generation: event.generation, autoplay: event.status == .ready || player.isPlaying)
             case .error:
                 relayState = .failed
                 relayErrorCode = event.errorCode
@@ -508,9 +516,18 @@ extension PlayVideoView {
                 do {
                     let (stream, url) = try await room.stream()
                     guard let self, !Task.isCancelled, room === self.room else { return }
+                    // Carry the current frame over: a new generation (e.g. a viewer joining)
+                    // otherwise restarts the host from zero.
+                    let resumeDate = relayState == .ready ? player.currentDate : nil
+                    isSwitchingStream = resumeDate != nil
+                    defer { isSwitchingStream = false }
                     loadedStream = stream
                     relayState = .ready
                     player.load(url: url, id: "room-\(stream.generation)", autoplay: autoplay)
+                    // Autoplay starts the player directly, bypassing `onUserPlay`: tell the room
+                    // explicitly, or its stale "not playing" snapshot pauses us again seconds later.
+                    if autoplay { sendControl(.play) }
+                    await resume(at: resumeDate)
                     scheduleRefresh(of: stream)
                 } catch let error as RoomError where error.code == "RELAY_STARTING" || error.code == "RELAY_NOT_STARTED" {
                     // `room:relay` will tell when the source is ready.
@@ -553,12 +570,6 @@ extension PlayVideoView {
                     return
                 }
             }
-        }
-
-        /// Only play / pause follow the server here; position changes arrive as a new generation.
-        private func syncPlayback(to snapshot: RoomSnapshot) {
-            guard snapshot.buffering != true, player.phase == .ready, snapshot.isPlaying != player.isPlaying else { return }
-            player.apply(position: player.currentSeconds, isPlaying: snapshot.isPlaying)
         }
 
         // MARK: - Host controls
@@ -610,7 +621,6 @@ extension PlayVideoView {
             snapshot = nil
             loadedStream = nil
             loadedGeneration = nil
-            usesParticipantEvents = false
             relayState = .none
             relayErrorCode = nil
             roomState = .idle

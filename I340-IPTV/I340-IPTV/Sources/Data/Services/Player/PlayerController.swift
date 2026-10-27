@@ -32,6 +32,8 @@ final class PlayerController: NSObject, ObservableObject {
     @Published private(set) var remainingText = "--:--"
     /// The current item has no finite duration — a live stream rather than VOD.
     @Published private(set) var isLive = false
+    /// Waiting for data (buffer underrun), not paused by anyone.
+    @Published private(set) var isStalled = false
     @Published private(set) var isMuted = false
     @Published private(set) var volume: Float = 1
     @Published private(set) var brightness: CGFloat = UIScreen.main.brightness
@@ -68,8 +70,7 @@ final class PlayerController: NSObject, ObservableObject {
     private var currentRequest: (url: URL?, id: String)?
     private var loadingID: String?
     private var shouldReconnectWhenNetworkRestores = false
-    /// Last valid playback position of the current request, so a reload (network drop, paywall
-    /// dismiss) resumes where it left off instead of restarting from zero.
+    /// Last valid position, so a reload resumes here instead of restarting from zero.
     private var lastKnownPosition: Double = 0
     private var statusObservation: NSKeyValueObservation?
     private var keepUpObservation: NSKeyValueObservation?
@@ -144,6 +145,7 @@ final class PlayerController: NSObject, ObservableObject {
         tearDownPlayer()
         player = nil
         isPlaying = false
+        isStalled = false
         progress = 0
         elapsedText = "--:--"
         remainingText = "--:--"
@@ -160,9 +162,8 @@ final class PlayerController: NSObject, ObservableObject {
         showsPreview = true
     }
 
-    /// Plays the current request again (after the paywall or a network drop), resuming from the
-    /// last known position instead of restarting from zero. A live channel has no fixed timeline
-    /// to seek back into across a fresh connection, so it just rejoins at the live edge.
+    /// Plays the current request again (after the paywall or a network drop), resuming where it
+    /// left off; a live channel has no timeline to resume into, so it rejoins at the live edge.
     func reload() {
         guard let request = currentRequest else { return }
         load(url: request.url, id: request.id, startAt: isLive ? 0 : lastKnownPosition)
@@ -175,6 +176,7 @@ final class PlayerController: NSObject, ObservableObject {
         if player.timeControlStatus == .playing {
             player.pause()
             isPlaying = false
+            isStalled = false
             showControls(autoHide: false)
             onUserPause?(currentSeconds)
         } else {
@@ -363,6 +365,13 @@ final class PlayerController: NSObject, ObservableObject {
         statusObservation = item.observe(\.status, options: [.initial, .new]) { [weak self] item, _ in
             DispatchQueue.main.async { self?.handle(status: item.status, id: id) }
         }
+        // `duration` can lag well behind "ready to play" for multi-bitrate HLS; ask the asset
+        // directly and correct a VOD false positive as soon as it's known.
+        Task { @MainActor [weak self] in
+            guard let duration = try? await item.asset.load(.duration), duration.seconds.isFinite, duration.seconds > 0 else { return }
+            guard let self, self.player?.currentItem === item else { return }
+            self.isLive = false
+        }
         keepUpObservation = item.observe(\.isPlaybackLikelyToKeepUp, options: [.new]) { [weak self] item, _ in
             guard item.isPlaybackLikelyToKeepUp else { return }
             DispatchQueue.main.async { self?.markReady(id: id) }
@@ -372,6 +381,7 @@ final class PlayerController: NSObject, ObservableObject {
                 guard let self else { return }
                 let playing = player.timeControlStatus == .playing
                 isPlaying = playing
+                isStalled = player.timeControlStatus == .waitingToPlayAtSpecifiedRate
                 if playing {
                     markReady(id: id)
                     onPlaybackStarted?()
@@ -406,8 +416,8 @@ final class PlayerController: NSObject, ObservableObject {
         guard current.isFinite, duration.isFinite, duration > 0 else {
             progress = 0
             remainingText = "--:--"
-            // Still loading, a VOD item's duration briefly reads the same as a live one's
-            // (not yet known); only call it live once the item has actually confirmed so.
+            // A loading VOD item's duration briefly reads the same as a live one's; only
+            // call it live once the item has actually confirmed so.
             isLive = phase == .ready
             return
         }

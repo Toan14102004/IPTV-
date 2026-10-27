@@ -186,8 +186,9 @@ private struct PlayVideoContent: View {
                 onMore: viewModel.showSpeedOptions,
                 onCast: viewModel.showAudioOutput,
                 room: viewModel.roomPlayback,
-                isBusy: viewModel.relayState == .preparing || viewModel.isReconnecting,
-                isLive: player.isLive
+                isBusy: viewModel.relayState == .preparing || viewModel.isReconnecting || viewModel.isSwitchingStream,
+                // The relay reads as live to the player regardless of the source while hosting.
+                isLive: viewModel.isHosting ? viewModel.isLiveRoom : player.isLive
             )
         }
         .frame(height: player.isFullscreen ? nil : UIScreen.main.bounds.width * 257 / 375)

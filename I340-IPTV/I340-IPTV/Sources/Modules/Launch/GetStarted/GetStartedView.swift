@@ -29,10 +29,8 @@ struct GetStartedView: View {
                     .padding(.top, 26)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
-            // GeometryReader gives every view an explicit, concrete size instead of relying on
-            // `.infinity`/proposed sizing: on iPad's regular size class, a `Spacer` pushing fixed
-            // content toward an edge inside an `.infinity`-sized stack collapsed that content to
-            // zero height instead of only taking the leftover space.
+            // Explicit size avoids a SwiftUI bug on iPad: a Spacer pushing content to an edge
+            // inside an `.infinity`-sized stack collapsed that content instead of just sizing around it.
             .overlay(alignment: .bottomLeading) {
                 VStack(alignment: .leading, spacing: 0) {
                     texts

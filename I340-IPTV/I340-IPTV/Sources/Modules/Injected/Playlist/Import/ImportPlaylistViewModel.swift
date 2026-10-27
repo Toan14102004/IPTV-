@@ -200,8 +200,7 @@ extension ImportPlaylistView {
 
         func didTapAdd() {
             guard canAdd, !isImporting else { return }
-            // Single streams skip content validation (there's nothing to parse), so the
-            // reachability hint is the only signal we have; ask before saving a dead-looking link.
+            // Streams skip content validation, so the reachability hint is all we have.
             if tab == .stream, urlCheck == .unreachable {
                 alert = .unreachableConfirm
                 return

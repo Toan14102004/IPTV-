@@ -29,9 +29,7 @@ extension ContentView {
         private var hasCheckedAppSuspend = false
 
         init() {
-            // The Xtream tab only ever adds Xtream profiles, so it skips the "Choose Import"
-            // sheet and goes straight to the Xtream form; the Playlist tab offers all import
-            // kinds, so it shows the sheet first.
+            // The Xtream tab only adds Xtream profiles, so it skips straight to that form.
             xtreamViewModel.onRequestAddProfile = {
                 AppNavigator.push(.importXtream)
             }

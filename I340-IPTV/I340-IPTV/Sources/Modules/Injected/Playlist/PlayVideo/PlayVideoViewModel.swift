@@ -78,6 +78,12 @@ extension PlayVideoView {
         private var offlineCancellable: AnyCancellable?
         private var hasStarted = false
         private var leavesScreen = false
+        /// When the screen started being pushed, and whether it is still here (see
+        /// `presentPlaybackFailed`).
+        private var appearedAt = Date()
+        private var isOnScreen = false
+        /// Long enough for a push transition to finish before anything is presented on top of it.
+        private static let transitionSettle: TimeInterval = 0.6
         private var loadedStream: RoomStream?
         private var loadedGeneration: Int?
         private var streamTask: Task<Void, Never>?
@@ -85,6 +91,10 @@ extension PlayVideoView {
         private var resolvedURL: URL?
         private var refreshTask: Task<Void, Never>?
         private var bannerTask: Task<Void, Never>?
+        /// "Left" banners waiting to see whether the person is really gone, keyed by participant.
+        private var leaveTasks: [String: Task<Void, Never>] = [:]
+        /// How long a viewer may be missing before the room treats it as having left.
+        private static let leaveGrace: TimeInterval = 8
         private var copyTask: Task<Void, Never>?
         private var relayTimeoutTask: Task<Void, Never>?
         /// The server gives up on a source after 45 s; past this the relay is considered stuck.
@@ -109,7 +119,19 @@ extension PlayVideoView {
                     )
                     return
                 }
-                self.isPlaybackFailedPresented = true
+                self.presentPlaybackFailed()
+            }
+        }
+
+        /// Shows the "channel unavailable" dialog once the screen is settled. It is a real
+        /// `fullScreenCover`, and one presented mid-push is never laid out — leaving an invisible
+        /// cover that swallows every touch, which a cached error response is fast enough to hit.
+        private func presentPlaybackFailed() {
+            let settled = Date().timeIntervalSince(appearedAt)
+            let wait = max(0, Self.transitionSettle - settled)
+            DispatchQueue.main.asyncAfter(deadline: .now() + wait) { [weak self] in
+                guard let self, isOnScreen else { return }
+                isPlaybackFailedPresented = true
             }
         }
 
@@ -192,7 +214,9 @@ extension PlayVideoView {
 
         func onAppear() {
             player.isActive = true
+            isOnScreen = true
             guard !hasStarted else { return }
+            appearedAt = Date()
             hasStarted = true
             player.setAspect(.cropToFill)
             if let url = sourceURL, XtreamStreamResolver.isSeriesInfoURL(url) {
@@ -204,6 +228,7 @@ extension PlayVideoView {
 
         func onDisappear() {
             player.isActive = false
+            isOnScreen = false
             if player.isFullscreen {
                 player.setFullscreen(false)
             }
@@ -415,9 +440,9 @@ extension PlayVideoView {
                     let previousIDs = Set(previousList.map(\.id))
                     let currentIDs = Set(currentList.map(\.id))
                     if let joined = currentList.first(where: { !previousIDs.contains($0.id) }) {
-                        showBanner(.joined, text: Self.joinedText(joined.name), avatar: RoomAvatar(key: joined.avatar))
+                        participantJoined(id: joined.id, name: joined.name, avatar: joined.avatar)
                     } else if let left = previousList.first(where: { !currentIDs.contains($0.id) }) {
-                        showBanner(.left, text: Self.leftText(left.name), avatar: RoomAvatar(key: left.avatar))
+                        participantLeft(id: left.id, name: left.name, avatar: left.avatar)
                     }
                 } else if previous.viewerCount != snapshot.viewerCount {
                     let someone = "watch_together_someone".localized(fallback: "Someone")
@@ -480,11 +505,34 @@ extension PlayVideoView {
 
         private func handleParticipant(_ event: RoomParticipantEvent) {
             guard event.code == snapshot?.code else { return }
-            let avatar = RoomAvatar(key: event.participant.avatar)
             switch event.type {
-            case .joined: showBanner(.joined, text: Self.joinedText(event.participant.name), avatar: avatar)
-            case .left: showBanner(.left, text: Self.leftText(event.participant.name), avatar: avatar)
+            case .joined:
+                participantJoined(id: event.participant.id, name: event.participant.name, avatar: event.participant.avatar)
+            case .left:
+                participantLeft(id: event.participant.id, name: event.participant.name, avatar: event.participant.avatar)
             }
+        }
+
+        /// Losing the network drops a viewer from the room, so "left" also arrives for a blip they
+        /// recover from. Hold the banner back and only announce people who are still gone.
+        private func participantLeft(id: String, name: String, avatar: String) {
+            leaveTasks[id]?.cancel()
+            leaveTasks[id] = Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: UInt64(Self.leaveGrace * 1_000_000_000))
+                guard let self, !Task.isCancelled else { return }
+                leaveTasks[id] = nil
+                guard snapshot?.participants?.contains(where: { $0.id == id }) != true else { return }
+                showBanner(.left, text: Self.leftText(name), avatar: RoomAvatar(key: avatar))
+            }
+        }
+
+        private func participantJoined(id: String, name: String, avatar: String) {
+            // Back before we announced them gone, so nothing happened as far as the room saw.
+            if let pending = leaveTasks.removeValue(forKey: id) {
+                pending.cancel()
+                return
+            }
+            showBanner(.joined, text: Self.joinedText(name), avatar: RoomAvatar(key: avatar))
         }
 
         private func handleRelay(_ event: RoomRelayEvent) {
@@ -613,6 +661,8 @@ extension PlayVideoView {
             relayTimeoutTask?.cancel()
             streamTask?.cancel()
             refreshTask?.cancel()
+            leaveTasks.values.forEach { $0.cancel() }
+            leaveTasks.removeAll()
             roomCancellable = nil
             offlineCancellable = nil
             isReconnecting = false

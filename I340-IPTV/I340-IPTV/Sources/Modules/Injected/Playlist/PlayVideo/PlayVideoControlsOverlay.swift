@@ -73,6 +73,14 @@ struct PlayVideoControlsOverlay: View {
                         .foregroundStyle(.white)
                 }
                 .allowsHitTesting(false)
+            } else if let stoppedText {
+                // Otherwise the area is just black once the error dialog is dismissed.
+                Text(stoppedText)
+                    .font(Typography.labelMedium)
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, Layout.Spacing.l)
+                    .allowsHitTesting(false)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -119,6 +127,18 @@ private extension PlayVideoControlsOverlay {
         }
         .padding(.horizontal, Layout.Spacing.m)
         .padding(.top, 10)
+    }
+
+    /// Why playback is not running, when it stopped for a reason of its own.
+    var stoppedText: String? {
+        switch controller.phase {
+        case .failed:
+            "playlist_player_error_title".localized(fallback: "Channel Unavailable")
+        case .networkLost:
+            "playlist_player_network_lost".localized(fallback: "Lost connection")
+        case .idle, .loading, .ready:
+            nil
+        }
     }
 
     var liveBadge: some View {

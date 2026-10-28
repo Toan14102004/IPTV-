@@ -148,6 +148,7 @@ private extension PlaylistView {
                                 onFavorite: { viewModel.toggleFavorite(playlist) },
                                 onDelete: { viewModel.askDelete(playlist) }
                             )
+                            .onAppear { viewModel.refreshDurationIfNeeded(playlist) }
                         }
                         if viewModel.homeVideos.isEmpty {
                             AddPlaylistDashedCard(action: viewModel.didTapAddFile)

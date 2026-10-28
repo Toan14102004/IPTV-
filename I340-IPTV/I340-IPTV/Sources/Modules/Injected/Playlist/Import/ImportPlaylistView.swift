@@ -178,7 +178,7 @@ private extension ImportPlaylistView {
                 .resizable()
                 .foregroundStyle(Color.accent1)
                 .frame(width: 24, height: 24)
-        case .idle, .unreachable:
+        case .idle, .unreachable, .notPlayable:
             EmptyView()
         }
     }

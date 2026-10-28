@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Centered "are you sure?" dialog with a muted No and a gradient Yes button.
+/// Centered "are you sure?" dialog (Figma "popup"): outlined No and a filled destructive Yes.
 /// Present it with `.popup(item:)` and `params.centerPopup().backgroundColor(.dialogDim)`.
 struct ConfirmDialogView: View {
     let title: String
@@ -17,48 +17,50 @@ struct ConfirmDialogView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text(title)
-                .font(FontFamily.Poppins.semiBold.font(size: 20))
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
-                .padding(.top, 29)
+            VStack(spacing: Layout.Spacing.xs) {
+                Text(title)
+                    .font(Typography.subtitleMedium)
+                    .foregroundStyle(Color.text1)
 
-            Text(message)
-                .font(FontFamily.Poppins.regular.font(size: 12))
-                .foregroundColor(Asset.Color.textGray.color)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 10)
+                Text(message)
+                    .font(Typography.bodySmall)
+                    .foregroundStyle(Color.text2)
+            }
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, Layout.Spacing.m)
 
-            Spacer(minLength: 0)
-
-            HStack(spacing: Layout.Spacing.s) {
+            HStack(spacing: Layout.Spacing.sm) {
                 Button(action: onNo) {
                     Text(noTitle)
-                        .font(FontFamily.Poppins.regular.font(size: 16))
-                        .foregroundColor(.white)
+                        .font(Typography.bodyLarge)
+                        .foregroundStyle(Color.text2)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 46)
-                        .background(Color.white.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.sm))
+                        .frame(height: 44)
+                        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.text2, lineWidth: 1))
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
 
                 Button(action: onYes) {
                     Text(yesTitle)
-                        .font(FontFamily.Poppins.semiBold.font(size: 16))
-                        .foregroundColor(.white)
+                        .font(Typography.subtitleSmall)
+                        .foregroundStyle(Color.text4)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 46)
+                        .frame(height: 44)
+                        .background(Color.roomLeave, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 }
-                .buttonStyle(.gradient(colors: [Asset.Color.brandRedDark.color, Asset.Color.brandRed.color]))
+                .buttonStyle(.plain)
             }
-            .padding(.bottom, 29)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .padding(.horizontal, Layout.Spacing.m)
+            .padding(.top, Layout.Spacing.l)
         }
-        .padding(.horizontal, 20)
-        .frame(width: 307, height: 184)
-        .background(Asset.Color.sheetSurface.color)
-        .clipShape(RoundedRectangle(cornerRadius: 30))
-        .shadow(color: Color.white.opacity(0.05), radius: 10, x: 0, y: -1)
+        .padding(.vertical, 20)
+        .frame(maxWidth: .infinity)
+        .background(Color.background1, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .padding(.horizontal, Layout.Spacing.m)
     }
 }
 

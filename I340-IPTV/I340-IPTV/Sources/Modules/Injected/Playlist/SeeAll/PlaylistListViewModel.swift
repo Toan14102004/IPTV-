@@ -19,6 +19,9 @@ extension PlaylistListView {
 
         @Injected private var playlistManager: IPTVPlaylistManager
 
+        /// Videos already probed for their length this session (see `refreshDurationIfNeeded`).
+        private var probedDurations = Set<String>()
+
         init(section: PlaylistSection, onBack: @escaping () -> Void) {
             self.section = section
             self.onBack = onBack
@@ -75,6 +78,19 @@ extension PlaylistListView {
 
         func toggleFavorite(_ playlist: IPTVPlaylist) {
             favoriteIDs = PlaylistFavorites.toggle(playlist.id)
+        }
+
+        /// A video whose length wasn't known at import (and so reads as LIVE) gets another try.
+        /// Cards reappear every time they scroll back in, so each video is only probed once.
+        func refreshDurationIfNeeded(_ playlist: IPTVPlaylist) {
+            guard (playlist.channels.first?.duration ?? -1) <= 0,
+                  probedDurations.insert(playlist.id).inserted else { return }
+            Task { @MainActor [weak self] in
+                guard let self, let updated = await playlistManager.refreshDurationIfUnknown(playlist) else { return }
+                if let index = playlists.firstIndex(where: { $0.id == updated.id }) {
+                    playlists[index] = updated
+                }
+            }
         }
 
         func cancelDelete() {

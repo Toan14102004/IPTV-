@@ -150,15 +150,29 @@ struct VideoCard: View {
             .onTapGesture(perform: onTap)
     }
 
+    /// The real length when known, otherwise a LIVE badge instead of a meaningless "--:--".
+    @ViewBuilder
+    private var durationOrLiveBadge: some View {
+        if (playlist.channels.first?.duration ?? 0) > 0 {
+            Text(playlist.videoSubtitle)
+                .font(Typography.labelSmall)
+                .lineLimit(1)
+        } else {
+            HStack(spacing: 4) {
+                Circle().fill(Color.roomLeave).frame(width: 6, height: 6)
+                Text("player_live".localized(fallback: "LIVE"))
+                    .font(FontFamily.Poppins.semiBold.font(size: 11))
+            }
+        }
+    }
+
     private var info: some View {
         HStack(alignment: .center, spacing: 0) {
             VStack(alignment: .leading, spacing: Layout.Spacing.xs) {
                 Text(playlist.name)
                     .font(Typography.bodyLarge)
                     .lineLimit(1)
-                Text(playlist.videoSubtitle)
-                    .font(Typography.labelSmall)
-                    .lineLimit(1)
+                durationOrLiveBadge
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 

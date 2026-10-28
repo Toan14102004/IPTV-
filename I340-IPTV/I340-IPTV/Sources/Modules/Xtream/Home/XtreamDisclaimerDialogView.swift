@@ -12,54 +12,64 @@ struct XtreamDisclaimerDialogView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("i")
-                .font(FontFamily.Poppins.medium.font(size: 42))
-                .foregroundColor(.white)
-                .frame(width: 60, height: 60)
-                .background(Circle().fill(Asset.Color.pinkAccent.color))
+                .font(FontFamily.Poppins.medium.font(size: 30))
+                .foregroundStyle(Color.text4)
+                .frame(width: 48, height: 48)
+                .background(Circle().fill(Color.primary1))
 
             Text("xtream_disclaimer_title".localized)
-                .font(FontFamily.Poppins.medium.font(size: 20))
-                .foregroundColor(.white)
+                .font(Typography.subtitleMedium)
+                .foregroundStyle(Color.text1)
                 .multilineTextAlignment(.center)
                 .padding(.top, Layout.Spacing.m)
 
             VStack(alignment: .leading, spacing: 0) {
                 Text("xtream_disclaimer_intro".localized)
-                    .font(FontFamily.Poppins.regular.font(size: 13))
+                    .font(Typography.labelMedium)
+                    .foregroundStyle(Color.text1)
                 Text("xtream_disclaimer_body".localized)
-                    .font(FontFamily.Poppins.regular.font(size: 11))
-                    .padding(.top, 10)
+                    .font(Typography.labelSmall)
+                    .foregroundStyle(Color.text2)
+                    .padding(.top, Layout.Spacing.s)
                 Text("xtream_disclaimer_confirm".localized)
-                    .font(FontFamily.Poppins.regular.font(size: 11))
-                    .padding(.top, 14)
+                    .font(Typography.labelSmall)
+                    .foregroundStyle(Color.text2)
+                    .padding(.top, Layout.Spacing.m)
             }
-            .foregroundColor(.white)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 14)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.top, Layout.Spacing.m)
 
-            HStack(spacing: 9) {
-                button("cancel".localized, font: FontFamily.Poppins.regular, color: Asset.Color.buttonNeutral.color, action: onCancel)
-                button("continue".localized, font: FontFamily.Poppins.medium, color: Asset.Color.brandRedButton.color, action: onContinue)
+            HStack(spacing: Layout.Spacing.sm) {
+                Button(action: onCancel) {
+                    Text("cancel".localized)
+                        .font(Typography.bodyLarge)
+                        .foregroundStyle(Color.text2)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.text2, lineWidth: 1))
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+
+                Button(action: onContinue) {
+                    Text("continue".localized)
+                        .font(Typography.subtitleSmall)
+                        .foregroundStyle(Color.text4)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(Color.primary1, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+                .buttonStyle(.plain)
             }
-            .padding(.top, 18)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .padding(.top, Layout.Spacing.l)
         }
-        .padding(20)
-        .padding(.top, Layout.Spacing.xs)
-        .frame(width: 283)
-        .background(Asset.Color.dialogBackground.color)
-        .clipShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.xxl))
-    }
-
-    private func button(_ title: String, font: FontConvertible, color: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(font.font(size: 15))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 43)
-                .background(color)
-                .clipShape(RoundedRectangle(cornerRadius: Layout.CornerRadius.sm))
-        }
-        .buttonStyle(.plain)
+        .padding(.vertical, 20)
+        .padding(.horizontal, Layout.Spacing.m)
+        .frame(maxWidth: .infinity)
+        .background(Color.background1, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .padding(.horizontal, Layout.Spacing.m)
     }
 }

@@ -18,6 +18,8 @@ extension ImportPlaylistView {
         case checking
         case reachable
         case unreachable
+        /// The link answers, but with a web page rather than media — it can never play.
+        case notPlayable
     }
 
     final class ViewModel: ObservableObject {
@@ -94,6 +96,10 @@ extension ImportPlaylistView {
             switch urlCheck {
             case .reachable: "import_field_url_valid".localized(fallback: "URL is valid and accessible")
             case .unreachable: "import_field_url_unreachable".localized(fallback: "We couldn't reach this URL")
+            case .notPlayable:
+                "import_field_url_not_media".localized(
+                    fallback: "This link opens a web page, not a video stream"
+                )
             case .idle, .checking:
                 tab == .stream ? ".m3u8/.mp4/.ts" : ".m3u/.w3u/.m3u8"
             }
@@ -102,7 +108,7 @@ extension ImportPlaylistView {
         var urlStatus: FormFieldStatus {
             switch urlCheck {
             case .reachable: .valid
-            case .unreachable: .invalid
+            case .unreachable, .notPlayable: .invalid
             case .idle, .checking: .normal
             }
         }
@@ -136,11 +142,12 @@ extension ImportPlaylistView {
 
         // MARK: - State
 
-        /// The form is complete (the reachability check only informs, it does not block).
+        /// The form is complete. Being unreachable only informs — a stream can be down now and fine
+        /// later — but a link serving a web page is refused outright.
         var canAdd: Bool {
             switch tab {
-            case .playlist: !trimmed(name).isEmpty && Self.isWebURL(trimmed(url))
-            case .stream: Self.isWebURL(trimmed(url))
+            case .playlist: !trimmed(name).isEmpty && Self.isWebURL(trimmed(url)) && urlCheck != .notPlayable
+            case .stream: Self.isWebURL(trimmed(url)) && urlCheck != .notPlayable
             case .file: pickedFileURL != nil && !isUploadingFile
             }
         }
@@ -289,22 +296,53 @@ extension ImportPlaylistView {
 
             urlCheck = .checking
             checkTask = Task { @MainActor [weak self] in
-                let isReachable = await Self.isReachable(target)
+                let result = await Self.probe(target)
                 guard let self, !Task.isCancelled, trimmed(url) == value else { return }
-                urlCheck = isReachable ? .reachable : .unreachable
+                urlCheck = result
             }
         }
 
-        private static func isReachable(_ url: URL) async -> Bool {
+        /// Does the URL answer, and is what it answers with media at all?
+        private static func probe(_ url: URL) async -> URLCheck {
             for method in ["HEAD", "GET"] {
                 var request = URLRequest(url: url, timeoutInterval: 8)
                 request.httpMethod = method
                 if method == "GET" { request.setValue("bytes=0-0", forHTTPHeaderField: "Range") }
                 guard let (_, response) = try? await URLSession.shared.data(for: request),
-                      let status = (response as? HTTPURLResponse)?.statusCode else { continue }
-                if (200..<400).contains(status) { return true }
+                      let http = response as? HTTPURLResponse,
+                      (200..<400).contains(http.statusCode) else { continue }
+
+                let type = http.value(forHTTPHeaderField: "Content-Type")?.lowercased() ?? ""
+                guard type.contains("html") else { return .reachable }
+                // Plenty of servers mislabel their playlist as HTML, so judge on the bytes.
+                return await servesPlaylist(url) ? .reachable : .notPlayable
             }
-            return false
+            return .unreachable
+        }
+
+        /// True when the body really is an M3U playlist, whatever the server calls it.
+        private static func servesPlaylist(_ url: URL) async -> Bool {
+            var request = URLRequest(url: url, timeoutInterval: 8)
+            request.setValue("bytes=0-2047", forHTTPHeaderField: "Range")
+            guard let text = await head(of: request, limit: 2048) else { return false }
+            let start = text.trimmingCharacters(in: .whitespacesAndNewlines).prefix(200)
+            return start.hasPrefix("#EXTM3U") || start.contains("#EXT-X-")
+        }
+
+        /// First `limit` bytes of the body as text; stopping there keeps a server that ignores
+        /// `Range` on an endless stream from running away with memory.
+        private static func head(of request: URLRequest, limit: Int) async -> String? {
+            guard let (stream, _) = try? await URLSession.shared.bytes(for: request) else { return nil }
+            var data = Data()
+            do {
+                for try await byte in stream {
+                    data.append(byte)
+                    if data.count >= limit { break }
+                }
+            } catch {
+                // Whatever arrived is enough to judge.
+            }
+            return String(data: data, encoding: .utf8)
         }
 
         private static func copyToStaging(_ sourceURL: URL) -> URL? {

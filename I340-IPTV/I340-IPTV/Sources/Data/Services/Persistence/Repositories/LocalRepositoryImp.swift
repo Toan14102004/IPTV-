@@ -44,6 +44,10 @@ final class LocalRepositoryImp: LocalRepository {
         return playlistDAO.save(item)
     }
 
+    func savePlaylistQuietly(_ playlist: IPTVPlaylist) async throws -> IPTVPlaylist {
+        playlistDAO.save(playlist)
+    }
+
     func deletePlaylist(id: String) async throws {
         playlistDAO.deletePlaylist(id: id)
     }

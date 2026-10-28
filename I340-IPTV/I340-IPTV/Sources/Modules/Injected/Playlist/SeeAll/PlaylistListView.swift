@@ -76,6 +76,7 @@ struct PlaylistListView: View {
                     onFavorite: { viewModel.toggleFavorite(playlist) },
                     onDelete: { viewModel.deleting = playlist }
                 )
+                .onAppear { viewModel.refreshDurationIfNeeded(playlist) }
             }
             AddPlaylistDashedCard(action: viewModel.didTapAddFile)
         }

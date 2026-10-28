@@ -236,6 +236,21 @@ final class IPTVPlaylistManager {
         )
     }
 
+    /// Re-probes a single video's length when the import-time check timed out (duration still -1),
+    /// which would otherwise leave a perfectly finite stream labelled LIVE forever.
+    func refreshDurationIfUnknown(_ playlist: IPTVPlaylist) async -> IPTVPlaylist? {
+        guard playlist.source == .file || playlist.source == .stream,
+              var channel = playlist.channels.first,
+              channel.duration <= 0,
+              let url = URL(string: channel.url) else { return nil }
+        let duration = await Self.duration(of: url)
+        guard duration > 0 else { return nil }
+        channel.duration = duration
+        var updated = playlist
+        updated.channels = [channel]
+        return try? await repository.savePlaylistQuietly(updated)
+    }
+
     /// Length in whole seconds, read from the file's header; -1 when it can't be read in time.
     private static func duration(of url: URL) async -> Int {
         let asset = AVURLAsset(url: url)

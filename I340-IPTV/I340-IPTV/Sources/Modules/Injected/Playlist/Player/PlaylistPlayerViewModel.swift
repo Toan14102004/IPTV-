@@ -22,6 +22,11 @@ extension PlaylistPlayerView {
         private let favoriteStore: IPTVFavoriteChannelStore
         private let onBack: () -> Void
         private var hasStarted = false
+        /// When the screen started being pushed, and whether it is still here (see `showPlaybackFailure`).
+        private var appearedAt = Date()
+        private var isOnScreen = false
+        /// Long enough for a push transition to finish before anything is presented on top of it.
+        private static let transitionSettle: TimeInterval = 0.6
         private var isStoppedForWatchLimitPaywall = false
         private lazy var watchLimit = WatchLimitPaywallCoordinator(lockable: self)
 
@@ -77,14 +82,17 @@ extension PlaylistPlayerView {
 
         func onAppear() {
             player.isActive = true
+            isOnScreen = true
             favoriteKeys = favoriteStore.favoriteKeys
             guard !hasStarted else { return }
             hasStarted = true
+            appearedAt = Date()
             select(at: selectedIndex)
         }
 
         func onDisappear() {
             player.isActive = false
+            isOnScreen = false
             if player.isFullscreen {
                 player.setFullscreen(false)
             }
@@ -133,7 +141,13 @@ extension PlaylistPlayerView {
                 )
                 return
             }
-            coordinator.alert = .playbackFailed
+            // A `fullScreenCover` presented mid-push is never laid out, leaving an invisible cover
+            // that swallows every touch — and a cached error fails fast enough to land there.
+            let wait = max(0, Self.transitionSettle - Date().timeIntervalSince(appearedAt))
+            DispatchQueue.main.asyncAfter(deadline: .now() + wait) { [weak self] in
+                guard let self, isOnScreen else { return }
+                coordinator.alert = .playbackFailed
+            }
         }
 
         // MARK: - WatchLimitLockable

@@ -72,6 +72,9 @@ final class PlayerController: NSObject, ObservableObject {
     private var shouldReconnectWhenNetworkRestores = false
     /// Last valid position, so a reload resumes here instead of restarting from zero.
     private var lastKnownPosition: Double = 0
+    /// Seek target the player has not reached yet; shown instead of the stale position so the bar
+    /// doesn't snap back while the seek is in flight.
+    private var pendingSeekSeconds: Double?
     private var statusObservation: NSKeyValueObservation?
     private var keepUpObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
@@ -154,6 +157,7 @@ final class PlayerController: NSObject, ObservableObject {
         hideControls()
         cancelLoadingTimeout()
         cancelControlsAutoHide()
+        pendingSeekSeconds = nil
     }
 
     /// Like `cleanup()` but keeps the last request so it can be retried.
@@ -223,12 +227,12 @@ final class PlayerController: NSObject, ObservableObject {
         guard !isLocked, let player else { return }
         let current = player.currentTime().seconds
         guard current.isFinite else { return }
+        let duration = player.currentItem?.duration.seconds
         var target = max(current + seconds, 0)
-        if let duration = player.currentItem?.duration.seconds, duration.isFinite, duration > 0 {
+        if let duration, duration.isFinite, duration > 0 {
             target = min(target, duration)
         }
-        player.seek(to: CMTime(seconds: target, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
-        showControls(autoHide: isPlaying)
+        applySeek(target: target, duration: duration, on: player)
         onUserSeek?(target)
     }
 
@@ -237,10 +241,22 @@ final class PlayerController: NSObject, ObservableObject {
               let player,
               let duration = player.currentItem?.duration.seconds,
               duration.isFinite, duration > 0 else { return }
-        let target = CMTime(seconds: duration * max(0, min(fraction, 1)), preferredTimescale: 600)
-        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero)
+        let target = duration * max(0, min(fraction, 1))
+        applySeek(target: target, duration: duration, on: player)
+        onUserSeek?(target)
+    }
+
+    /// Moves the player, showing `target` as the position right away rather than waiting for the
+    /// next progress tick.
+    private func applySeek(target: Double, duration: Double?, on player: AVPlayer) {
+        pendingSeekSeconds = target
+        elapsedText = Self.timeText(target)
+        if let duration, duration.isFinite, duration > 0 {
+            progress = max(0, min(target / duration, 1))
+            remainingText = Self.timeText(max(duration - target, 0))
+        }
+        player.seek(to: CMTime(seconds: target, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
         showControls(autoHide: isPlaying)
-        onUserSeek?(target.seconds)
     }
 
     func setPlaybackRate(_ rate: Float) {
@@ -407,10 +423,19 @@ final class PlayerController: NSObject, ObservableObject {
             elapsedText = "--:--"
             remainingText = "--:--"
             isLive = false
+            pendingSeekSeconds = nil
             return
         }
-        let current = player.currentTime().seconds
+        var current = player.currentTime().seconds
         let duration = player.currentItem?.duration.seconds ?? 0
+        if let pending = pendingSeekSeconds {
+            // Once the player actually lands near the target, hand display back to its real time.
+            if current.isFinite, abs(current - pending) < 1 {
+                pendingSeekSeconds = nil
+            } else {
+                current = pending
+            }
+        }
         elapsedText = Self.timeText(current)
         if current.isFinite, current >= 0 { lastKnownPosition = current }
         guard current.isFinite, duration.isFinite, duration > 0 else {
@@ -512,6 +537,7 @@ final class PlayerController: NSObject, ObservableObject {
 
     private func showNetworkLost() {
         loadingID = nil
+        isStalled = false
         phase = .networkLost
         hideControls()
     }
@@ -533,6 +559,9 @@ final class PlayerController: NSObject, ObservableObject {
         tearDownPlayer()
         player = nil
         isPlaying = false
+        // The dying item's stall must not outlive it, or the overlay keeps spinning "loading" over
+        // a stream that has already failed, with the controls hidden behind it.
+        isStalled = false
         loadingID = nil
         phase = .failed
         showsPreview = true

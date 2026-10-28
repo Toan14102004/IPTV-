@@ -25,6 +25,8 @@ extension WatchRoomView {
         }
         @Published private(set) var snapshot: RoomSnapshot?
         @Published private(set) var isCodeCopied = false
+        /// Quietly getting the stream back after our relay link died.
+        @Published private(set) var isRecovering = false
         @Published private(set) var banner: PlayVideoView.Banner?
         @Published var sheet: PlayVideoView.Sheet?
         @Published var isLeaveDialogPresented = false
@@ -45,6 +47,18 @@ extension WatchRoomView {
         private var refreshTask: Task<Void, Never>?
         private var copyTask: Task<Void, Never>?
         private var bannerTask: Task<Void, Never>?
+        /// "Left" banners waiting to see whether the person is really gone, keyed by participant.
+        private var leaveTasks: [String: Task<Void, Never>] = [:]
+        /// How long someone may be missing before the room treats it as having left.
+        private static let leaveGrace: TimeInterval = 8
+        /// Getting back to watching after the relay link died under us (see `scheduleRecovery`).
+        private var recoveryTask: Task<Void, Never>?
+        private var recoveryAttempts = 0
+        private var rejoins = 0
+        /// Fresh links to ask for before giving up and rejoining the room instead.
+        private static let maxLinkRetries = 3
+        /// Rejoins before the viewer is told to retry by hand.
+        private static let maxRejoins = 2
         /// Server clock minus this device's clock, to count down to `hostReconnectDeadline`.
         private var serverClockOffset: Double = 0
         /// Drift past this many seconds from the room clock is corrected with a seek.
@@ -59,12 +73,20 @@ extension WatchRoomView {
                 RoomLog.note("player could not open the relay link")
                 loadedGeneration = nil
                 status = .waitingHost(errorCode: "PLAYER_LOAD_FAILED")
+                scheduleRecovery()
+            }
+            // Watching again means the recovery worked; start counting from scratch next time.
+            player.onPlaybackStarted = { [weak self] in
+                self?.isRecovering = false
+                self?.recoveryAttempts = 0
+                self?.rejoins = 0
             }
         }
 
         deinit {
             streamTask?.cancel()
             refreshTask?.cancel()
+            recoveryTask?.cancel()
             room?.leaveRoom()
         }
 
@@ -109,14 +131,19 @@ extension WatchRoomView {
         var isRoomPlaying: Bool { snapshot?.isPlaying == true }
 
         var isBusy: Bool {
-            switch status {
+            if isRecovering { return true }
+            return switch status {
             case .joining, .preparing: true
             default: false
             }
         }
 
         var statusText: String? {
-            switch status {
+            // Our own link died, not the host's doing.
+            if isRecovering, case .waitingHost = status {
+                return "watch_together_reconnecting".localized(fallback: "Connection lost. Reconnecting…")
+            }
+            return switch status {
             case .joining:
                 "room_joining".localized(fallback: "Joining the room…")
             case .waitingHost:
@@ -144,10 +171,11 @@ extension WatchRoomView {
             return "room_ended_message".localized(fallback: "The host has ended the room")
         }
 
-        /// Shown under the status for testers and support.
+        /// Shown under the status for testers and support; hidden while the app is still retrying,
+        /// where the code is noise rather than something to report.
         var errorCode: String? {
-            if case let .waitingHost(errorCode) = status { return errorCode }
-            return nil
+            guard !isRecovering, case let .waitingHost(errorCode) = status else { return nil }
+            return errorCode
         }
 
         // MARK: - Lifecycle
@@ -330,19 +358,61 @@ extension WatchRoomView {
                     }
                     loadedStream = stream
                     loadedGeneration = stream.generation
+                    // The link is good again; the counters stay until playback really starts, so a
+                    // link that loads and dies straight back cannot retry forever.
+                    isRecovering = false
                     status = .watching
                     player.load(url: url, id: "room-\(stream.generation)", autoplay: autoplay)
                     scheduleRefresh(of: stream)
                     await seekToRoomPosition()
                 } catch let error as RoomError where error.code == "RELAY_STARTING" {
+                    // The host drives this one: a `room:relay` event is on its way.
+                    self?.isRecovering = false
                     self?.status = .preparing
                 } catch let error as RoomError where error.code == "RELAY_NOT_STARTED" || error.code == "RELAY_FAILED" {
+                    self?.isRecovering = false
                     self?.status = .waitingHost(errorCode: error.code == "RELAY_FAILED" ? error.code : nil)
                 } catch {
                     guard let self, !Task.isCancelled else { return }
                     status = .waitingHost(errorCode: (error as? RoomError)?.code ?? "STREAM_DECODE")
                     Logger.e("Room stream failed", error)
+                    // Asking for the link is what failed, so nothing else will retry it for us.
+                    if isRecovering { scheduleRecovery() }
                 }
+            }
+        }
+
+        /// Gets the viewer watching again after a network drop killed its relay link. Nothing
+        /// changed on the server, so no `room:relay` event is coming to rescue it.
+        ///
+        /// Asks for a fresh link a few times, then rejoins the room, then gives up to a manual retry.
+        private func scheduleRecovery() {
+            recoveryTask?.cancel()
+            isRecovering = true
+            recoveryAttempts += 1
+            let attempt = recoveryAttempts
+            recoveryTask = Task { @MainActor [weak self] in
+                let backoff = Double(min(attempt, Self.maxLinkRetries)) * 2
+                try? await Task.sleep(nanoseconds: UInt64(backoff * 1_000_000_000))
+                guard let self, !Task.isCancelled, room != nil else { return }
+
+                if attempt <= Self.maxLinkRetries {
+                    RoomLog.note("viewer recovery \(attempt): asking for a fresh link")
+                    requestStream(autoplay: snapshot?.isPlaying ?? false)
+                    return
+                }
+                guard rejoins < Self.maxRejoins else {
+                    RoomLog.note("viewer recovery gave up after \(rejoins) rejoins")
+                    isRecovering = false
+                    status = .failed(errorCode: "PLAYER_LOAD_FAILED")
+                    return
+                }
+                RoomLog.note("viewer recovery: rejoining the room")
+                rejoins += 1
+                recoveryAttempts = 0
+                recoveryTask = nil
+                closeRoom()
+                join()
             }
         }
 
@@ -404,10 +474,25 @@ extension WatchRoomView {
 
         private func handleParticipant(_ event: RoomParticipantEvent) {
             guard event.code == code, event.participant.name != identity.name else { return }
-            let avatar = RoomAvatar(key: event.participant.avatar)
+            let participant = event.participant
             switch event.type {
-            case .joined: showBanner(.joined, text: Self.joinedText(event.participant.name), avatar: avatar)
-            case .left: showBanner(.left, text: Self.leftText(event.participant.name), avatar: avatar)
+            case .joined:
+                // Back before we announced them gone, so the blip is nobody else's business.
+                if let pending = leaveTasks.removeValue(forKey: participant.id) {
+                    pending.cancel()
+                    return
+                }
+                showBanner(.joined, text: Self.joinedText(participant.name), avatar: RoomAvatar(key: participant.avatar))
+            case .left:
+                // A network drop looks the same as leaving, so wait and see before announcing it.
+                leaveTasks[participant.id]?.cancel()
+                leaveTasks[participant.id] = Task { @MainActor [weak self] in
+                    try? await Task.sleep(nanoseconds: UInt64(Self.leaveGrace * 1_000_000_000))
+                    guard let self, !Task.isCancelled else { return }
+                    leaveTasks[participant.id] = nil
+                    guard snapshot?.participants?.contains(where: { $0.id == participant.id }) != true else { return }
+                    showBanner(.left, text: Self.leftText(participant.name), avatar: RoomAvatar(key: participant.avatar))
+                }
             }
         }
 
@@ -432,6 +517,10 @@ extension WatchRoomView {
         private func closeRoom() {
             streamTask?.cancel()
             refreshTask?.cancel()
+            recoveryTask?.cancel()
+            leaveTasks.values.forEach { $0.cancel() }
+            leaveTasks.removeAll()
+            isRecovering = false
             roomCancellable = nil
             bannerTask?.cancel()
             room?.leaveRoom()
